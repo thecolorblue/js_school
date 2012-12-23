@@ -1,0 +1,189 @@
+---
+  	title: Backbone Models
+  	url: backbone-models.html
+  	desc: backbone, models, jquery, ajax
+---
+
+This lesson covers:
+* "Backbone.js":#backbone
+* "Backbone Models":#models
+* "Backbone Collections":#collections
+* "Backbone Views":#views
+
+h2(#backbone). Backbone.js
+
+Backbone has taken the javascript world by storm. Personally, backbone.js taught me how to organize my code, and has made working in large teams far easier. It combines powerful prototype features with the simplicity that javascript developers have been accostumbed too. 
+
+Backbone takes a very classical model-view-controller look at client side applications. The focus is not only to create readable code, but to create code that is reuseable across pages and applications. This is a great system if you keep to it. And if you don't you end up with some loosely linked modules, that are still useable on their own. 
+
+The view page will walk you through building a backbone application. 
+
+h2(#models). Backbone Models
+
+Models are the link to the server. Ideally, anything coming in or out of the page, once it has loaded, should go through a model. This will keep you from re-writing $.ajax objects, and should allow you to reuse your models on other pages. 
+
+Even more than that, models should hold onto any data you have, and should be unique to one product or object. Try to avoid using arrays in a model. Any kind of array should be a collection. But I digress. 
+
+We are going to recreate the 'total' request from the create page in backbone. Backbone models expect to use a rails like backend, the routes should conform to those standards. We can change these defaults but the routing scheme is a good one to know, so that is what we will be using. This example is a bit contrived but it will get us started. Baby steps, baby steps. 
+
+var TotalModel = Backbone.Model.extend();
+
+var totalModel = new TotalModel({
+	id : 'total',
+	url : '/products'
+});
+
+totalModel.on('change:total', function(model, total) {
+	$("#total").text(total);
+});
+
+totalModel.fetch();
+
+TODO: test this out. Is it going to make the correct request?
+
+There is a bunch going on here, so let me break it down. 
+
+var TotalModel = Backbone.Model.extend();
+
+We first create the prototype for the model. This would usually hold any functions we will need later on. There are a lot of functions that we might want to attach to the model, but its a good idea to only stick to these: conversions, validations, computed properties, access control (pulled directly from the backbone website). Anything else should probably be attached to a collection or a view. 
+
+var totalModel = new TotalModel({
+	id : 'total'
+});
+
+We then create an instance of the model. In theory, we might want multiple instances of a model, one for each product for example. In this case, we only want one thing, the total number of products. We can also attach functions that we will need later for the total. 
+
+totalModel.on('change:total', function(model, total) {
+	$("#total").text(total);
+});
+
+totalModel.fetch();
+
+Finally we setup a listener and tell the model to fetch the total from the server. Both of these will move somewhere else, and the code itself will change. 
+
+h2(#collections). Backbone Collections
+
+TODO: someone who uses collections should re-write this. I almost never use collections.
+
+Backbone collections are basically like an object to keep track of multiple models, in the same way an iPad is just a large iPhone. You will be using these to solve very different problems. 
+
+Lets jump right into it and then we can break down whats going on.
+
+var ProductCollection = new Backbone.Collection.extend({
+	url : '/products',
+	comparator : function(product) {
+		return product.title;
+	}
+});
+
+var productCollection = new ProductCollection();
+
+productCollection.fetch();
+
+TODO: explain whats going on here
+
+h2(#views). Backbone Views
+
+On a person note, I use views way to much. I am a UI person, so a lot of what I do interacts with the DOM. Somehow, the way views work just makes more sense then the models and collections. 
+
+Here is your basic view:
+
+var TotalView = Backbone.View.extend({
+	initialize : function() {
+		//   model.on( event,         callback,    context);
+		this.model.on('change:total', this.update, this);
+
+		this.model.fetch();
+	},
+	update : function(model, total) {
+		this.$el.text(total);
+	}
+});
+
+var totalView = new TotalView({
+	el : '#total',
+	model : totalModel
+});
+
+Here we have the view to go with our total model. That bottom couple lines I was saying was going to change? We don't need that anymore. although, having the view call model.fetch() is not ideal. 
+
+And the view for products?
+
+var ProductView = Backbone.View.extend({
+	initialize : function() {
+		this.tmpl = function(obj) {
+			return '<div class="product">' +
+			'<h2>' +  obj.title + '</h2>' + 
+			'<p>' + obj.desc + '</p>' + 
+			'</div>';
+		};
+	},
+	render : function(obj) {
+		if(this.el) this.$el.html(this.tmpl(obj));
+		else return this.tmpl(obj);
+	}
+});
+
+var productView = new ProductView();
+
+That is pretty much all you need for this page. We are setting up the template and creating a render function. Keep in mind, you will probably want to replace the template with a template library like hogan.js or dust.js. 
+
+We still have to put everything together.
+
+var ProductCollection = new Backbone.Collection.extend({
+	url : '/products',
+	comparator : function(product) {
+		return product.title;
+	}
+});
+
+var ProductView = Backbone.View.extend({
+	initialize : function() {
+		this.tmpl = function(obj) {
+			return '<div class="product">' +
+			'<h2>' +  obj.title + '</h2>' + 
+			'<p>' + obj.desc + '</p>' + 
+			'</div>';
+		};
+	},
+	render : function(obj) {
+		if(this.el) this.$el.append(this.tmpl(obj));
+		else return this.tmpl(obj);
+	},
+	clear : function() {
+		if(this.el) this.$el.empty();
+	}
+});
+
+var logic = {
+	initialize : function() {
+		this.collection = new ProductCollection();
+		this.view = new ProductView({ el : "#products" });
+		this.collection.on('update', this.renderAll, this);
+
+		this.collection.fetch();
+	},
+	renderAll : function() {
+		this.view.clear();
+		this.collection.each(function(model) {
+			logic.view.render(model);
+		});
+	}
+}
+
+logic.initialize();
+
+I have seen people take the logic and put it in the view, and honestly, I did this for a while. This is not a great idea, since you have lost the ability to reuse your view. If you wanted to copy and paste it onto another page, you would have to remove the logic. 
+
+TODO: there must be a better way to create the logic object. 
+
+h2(#soapbox). Thoughts on Reuseability
+
+For some of you developing full applications in javascript might feel overwelming but when you are done with a block of code, keep these things in mind:
+
+1. How will other people read this code
+2. How can other people use this code
+3. How useable will this code be in the future
+4. How well does this code work with code already written
+
+Try giving yourself a score for each of these. The better the score, the more productive you, and people you are working with, will be. 

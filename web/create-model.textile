@@ -1,0 +1,217 @@
+---
+	title: Your First Model
+	url: create-model.html
+	desc: jquery, ajax, form, click handler, update, JQXHR, Deferred
+---
+
+This lesson covers:
+* "Form":#form
+* "Intercept POST":#intercept
+* "Update Total":#update
+* "Javascript Structure":#structure
+
+h2(#form). The Form
+
+The form is nothing to complicated, maining so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and we will pick it up later. 
+
+h2(#intercept). Stop That POST
+
+Stoping a http form from going forward is just like preventing the default from any other element event.
+
+$("#form").on('submit', function(e) {
+	e.preventDefault();
+});
+
+Another option is to put "return false;" at the bottom of the callback function, but I find it a little easier to read by putting "e.preventDefault()" right at the top. 
+
+Now we need to make our own request, but this time with ajax. I am going to use $.ajax(), but $.post(), will also work. $.ajax is much more flexible, and it's good to learn all the extra settings that are used. 
+
+$.ajax({
+	type : "POST",
+	url  : "/products/create",
+	data : $("#form").serialize(),
+	success : function(res) {
+		// all done
+	}
+});
+
+h2(#update). Update Total
+
+Now we need to clear the form...
+
+$("#form").each(function(){
+	if(this.reset) this.reset();
+}); 
+
+... and update the total counter...
+
+$.ajax({
+	type : "GET",
+	url  : "/products/total",
+	success : function(total) {
+		$("#total").text(total);
+	}
+});
+
+All together, the javascript for this page looks like this. 
+
+$("#form").on('submit', function(e) {
+	e.preventDefault();
+	$.ajax({
+		type : "POST",
+		url  : "/products/create",
+		data : $("#form").serialize(),
+		success : function(res) {
+			$("#form").each(function(){
+				if(this.reset) this.reset();
+			});
+			$.ajax({
+				type : "GET",
+				url  : "/products/total",
+				success : function(total) {
+					$("#total").text(total);
+				}
+			});
+		}
+	});	
+});
+
+h2(#structure). Javascript Structure
+
+But this is ugly. Its hard to reuse any of this code, the flow is not easy to read, and it does not efficiently use jquery.
+
+First, lets cache some of our jquery DOM lookups. 
+
+var $form = $("#form");
+
+$form.on('submit', function(e) {
+	e.preventDefault();
+	$.ajax({
+		type : "POST",
+		url  : "/products/create",
+		data : $form.serialize(),
+		success : function(res) {
+			$form.each(function(){
+				if(this.reset) this.reset();
+			});
+			$.ajax({
+				type : "GET",
+				url  : "/products/total",
+				success : function(total) {
+					$("#total").text(total);
+				}
+			});
+		}
+	});	
+});
+
+We now only search through the DOM once, for the form. We are using an id, which is pretty quick, but if we had to use a class, or a more complicated search, it would save time, which is noticable for larger js applications. I did not cache $("#total") because we only use it once, but if we needed to access it again, it would be good to cache that also.
+
+Now lets break up the callbacks. We can do this a couple ways.
+
+var $form = $("#form");
+
+$form.on('submit', function(e) {
+	e.preventDefault();
+	var GET = {
+		type : "GET",
+		url  : "/products/total",
+		success : GETCallback
+	};
+	var GETCallback = function(total) {
+		$("#total").text(total);
+	};
+
+	var POST = {
+		type : "POST",
+		url  : "/products/create",
+		data : $form.serialize(),
+		success : POSTCallback
+	};
+	var POSTCallback = function(res) {
+		$form.each(function(){
+			if(this.reset) this.reset();
+		});
+		$.ajax(GET);
+	};
+
+	$.ajax(POST);
+});
+
+This breaks up the pyramid look code often gets when using asynchronous calls. It's still a little hard to follow. 
+
+var $form = $("#form");
+
+$form.on('submit', function(e) {
+	e.preventDefault();
+	var totalRequest = {
+		type : "GET",
+		url  : "/products/total"
+	};
+	var updateTotal = function(total) {
+		$("#total").text(total);
+	};
+
+	var setRequest = {
+		type : "POST",
+		url  : "/products/create",
+		data : $form.serialize()
+	};
+	var clearForm = function(form) {
+		form.each(function(){
+			if(this.reset) this.reset();
+		});
+	};
+
+	$.ajax(setRequest)
+	.sucess(clearForm)
+	.success(function() {
+		$.ajax(totalRequest)
+		.success(updateTotal);
+	});
+});
+
+Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented. 
+
+var createPage = {
+	$form : $("#form"),
+	totalRequest : {
+		type : "GET",
+		url  : "/products/total"
+	},
+	setRequest : {
+		type : "POST",
+		url  : "/products/create",
+		data : this.$form.serialize()
+	},
+	updateTotal : function(total) {
+		$("#total").text(total);
+	},
+	clearForm   : function() {
+		this.$form.each(function(){
+			if(this.reset) this.reset();
+		});
+	},
+	handleSubmit : function(e) {
+		e.preventDefault();
+		$.ajax(this.setRequest)
+		.sucess(this.clearForm)
+		.success(function() {
+			$.ajax(totalRequest)
+			.success(updateTotal);
+		});
+	},
+	initialize : function() {
+		this.$form.on('submit', this.handleSubmit);
+	}
+};
+
+createPage.initialize();
+
+Wow, that was a big change. We now have everything wrapped into one object. This allows us to do two things: 
+
+1. the object requires a specific structure that cleans up the code
+2. we are now able to use "this" inside the object to refer to createPage
+
+If you are not used to this much structure it can feel weird, and you are probably asking "why are we doing this?".  I will explain more later. 
+
