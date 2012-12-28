@@ -14,6 +14,16 @@ h2(#form). The Form
 
 The form is nothing to complicated, maining so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and we will pick it up later. 
 
+I have fallen in love with [bower](https://github.com/twitter/bower) which allows you to quickly add all the libraries you need. [Components](https://github.com/component/component) are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone. 
+
+Anyways, get to your folder in your terminal and install jquery, underscore, and backbone with this:
+	
+	$ npm install -g bower
+	$ bower install backbone
+	$ bower install jquery
+
+Just as a little side note, there is a little magic happening behind the scenes. There is a .bowerrc file that tells bower where to get the files and where to put them. 
+
 h2(#intercept). Stop That POST
 
 Stoping a http form from going forward is just like preventing the default from any other element event.
@@ -62,6 +72,7 @@ $("#form").on('submit', function(e) {
 		url  : "/products/create",
 		data : $("#form").serialize(),
 		success : function(res) {
+			console.log('response:',res);
 			$("#form").each(function(){
 				if(this.reset) this.reset();
 			});
@@ -113,26 +124,27 @@ var $form = $("#form");
 
 $form.on('submit', function(e) {
 	e.preventDefault();
+	var GETCallback = function(total) {
+		$("#total").text(total);
+	};
+	var POSTCallback = function(res) {
+		console.log('post callback');
+		$form.each(function(){
+			if(this.reset) this.reset();
+		});
+		$.ajax(GET);
+	};
+
 	var GET = {
 		type : "GET",
 		url  : "/products/total",
 		success : GETCallback
 	};
-	var GETCallback = function(total) {
-		$("#total").text(total);
-	};
-
 	var POST = {
 		type : "POST",
 		url  : "/products/create",
 		data : $form.serialize(),
 		success : POSTCallback
-	};
-	var POSTCallback = function(res) {
-		$form.each(function(){
-			if(this.reset) this.reset();
-		});
-		$.ajax(GET);
 	};
 
 	$.ajax(POST);
@@ -152,19 +164,21 @@ $form.on('submit', function(e) {
 		$("#total").text(total);
 	};
 
-	var setRequest = {
-		type : "POST",
-		url  : "/products/create",
-		data : $form.serialize()
+	var setRequest = function() {
+		return {
+			type : "POST",
+			url  : "/products/create",
+			data : $form.serialize()
+		};
 	};
 	var clearForm = function(form) {
-		form.each(function(){
+		$form.each(function(){
 			if(this.reset) this.reset();
 		});
 	};
 
-	$.ajax(setRequest)
-	.sucess(clearForm)
+	$.ajax(setRequest())
+	.success(clearForm)
 	.success(function() {
 		$.ajax(totalRequest)
 		.success(updateTotal);
@@ -173,36 +187,39 @@ $form.on('submit', function(e) {
 
 Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented. 
 
-var createPage = {
+var createPage = {};
+
+createPage = {
 	$form : $("#form"),
 	totalRequest : {
 		type : "GET",
 		url  : "/products/total"
 	},
-	setRequest : {
-		type : "POST",
-		url  : "/products/create",
-		data : this.$form.serialize()
+	setRequest : function() {
+		return {
+			type : "POST",
+			url  : "/products/create",
+			data : this.$form.serialize()
+		};
 	},
 	updateTotal : function(total) {
 		$("#total").text(total);
 	},
 	clearForm   : function() {
-		this.$form.each(function(){
-			if(this.reset) this.reset();
-		});
+		this.$form.get(0).reset();
 	},
 	handleSubmit : function(e) {
+		debugger;
 		e.preventDefault();
-		$.ajax(this.setRequest)
-		.sucess(this.clearForm)
+		$.ajax(this.setRequest())
+		.success(this.clearForm.bind(createPage))
 		.success(function() {
-			$.ajax(totalRequest)
-			.success(updateTotal);
+			$.ajax(createPage.totalRequest)
+			.success(createPage.updateTotal);
 		});
 	},
 	initialize : function() {
-		this.$form.on('submit', this.handleSubmit);
+		this.$form.on('submit', this.handleSubmit.bind(createPage));
 	}
 };
 
@@ -212,6 +229,8 @@ Wow, that was a big change. We now have everything wrapped into one object. This
 
 1. the object requires a specific structure that cleans up the code
 2. we are now able to use "this" inside the object to refer to createPage
+
+There is a downside and it is mostly related to the way jQuery sets up success callbacks. By default jQuery sets the context of callbacks to the jQXHR, which is the object with information on the request. There are two ways to get around this, use .bind (like I did in the example) or set the context in the options you pass $.ajax. I have had better luck with .bind.
 
 If you are not used to this much structure it can feel weird, and you are probably asking "why are we doing this?".  I will explain more later. 
 
