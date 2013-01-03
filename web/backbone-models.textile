@@ -198,6 +198,8 @@ productsModel.fetch({
 });
 </pre>
 
+
+(TODO: expand this section. Why is this better? )
 Whoa, thats a lot of code just to get some JSON and render it into html. To do the same thing with just jQuery would only take a couple lines. Let me point out two powerful features you will not get with just jQuery.
 
 1. Object Oriented
