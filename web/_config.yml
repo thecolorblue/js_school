@@ -1,0 +1,42 @@
+permalink: none
+lessons:
+  -
+    title: Setup
+    url: setup.html
+    desc: Install, node.js, express
+  -
+    title: Your First Model
+    url: create-model.html
+    desc: jquery, ajax, form, click handler, update, JQXHR, Deferred
+  -
+    title: Backbone Models
+    url: backbone-models.html
+    desc: backbone, models, jquery, ajax
+  -
+    title: Backbone Collections
+    url: backbone-collections.html
+    desc: backbone, collections
+  -
+    title: Backbone Views
+    url: backbone-views.html
+    desc: backbone, views, events, MVC
+  -
+    title: Crossfilter
+    url: crossfilter.html
+    desc: crossfilter, large datasets, really fast, filtering, map/reduce
+  -
+    title: D3 Graphs
+    url: d3.html
+    desc: d3, graphs, charts, purty websites, reusable code
+  -
+    title: Pure, Uncut, JS - models
+    url: purejs-model.html
+    desc: js, models
+  -
+    title: JS - Controllers
+    url: purejs-controllers.html
+    desc: js, controllers, coffeescript
+  -
+    title: JS - Views
+    url: purejs-views.html
+    desc: js, views

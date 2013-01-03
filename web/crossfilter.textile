@@ -1,0 +1,56 @@
+---
+  	title: Crossfilter
+  	url: crossfilter.html
+  	desc: crossfilter, large datasets, really fast, filtering, map/reduce
+---
+
+This lesson covers:
+* "CrossFilter.js":#crossfilter
+* "Map/reduce":#map
+* "D3 Graphs":#D3
+* "Total Products Graph":#totalProducts
+
+h2(#corssfilter). CrossFilter.js
+
+Crossfilter is a library created by the guys at Square.  If you are still thinking about Backbone Collections, crossfilter is like a collection created to handle thousands of models at once. There is a lot of magic going on behind the scenes, and it is a little more strict about how you need to use it, but it allows for javascript to handle data that it would not usually be able to handle. 
+
+Try out crossfilter in a console somewhere, either with node, or in the browser in your developer tools. 
+
+TODO: create a basic crossfilter
+
+h2(#map). Map / Reduce
+
+Map / Reduce is a blanket term for handling flat lists of data. 
+TODO: was the term map/reduce originated at Google? Verify. 
+
+Generally speaking, a map function pulls all relavent data elements, and the reduce function boils those elements down, combining them or minipulating them in whatever way needed. You can have multiple map functions, that continue to filter out elements, and you can have multiple reduce functions that continue to reduce the data down to pure information. It is designed to be flexible enough to be spread across multiple servers (outside of the scope of client side applications), and therefore, in theory, work well web workers. It also makes it easy to reuse map or reduce functions. 
+
+h2(#d3). D3 Graphs
+
+OMG D3!
+
+D3.js is a graphing library that makes building super awesome graphs and visualizations much easier. It also has a different way of thinking about updating the DOM that is more in tune with animations. You will find that updating the products page to add animation is difficult. JQuery has a nice animation function, and there are always css3 transistions, but it will get crazy pretty quick. You will find that d3 has a harder learning curve to get started, but adding on additions or more complex data sets will be easier. 
+
+TODO: basic d3 graph
+
+There are two things that are different:
+
+1. D3 does not have a model. Data is attached to the DOM element
+2. Updating is a three step process. Find elements / find data, combine and process, flush out un-needed elements.
+
+h2(#totalProducts). Total Products Graph
+
+TODO: Pull in json from server
+
+TODO: crossfilter, sort, or filter from select dropdown box
+
+TODO: update graph
+
+This is the part I love. We must first give d3 our new set of elements.
+
+D3 will merge this with the data it already has attached to the elements it found. It will now create three buckets of elements, new, updating, and exiting(deleting). You can now tell each bucket what to do seperately. New elements you might want to slide in from the right, updating elements should change color, and exiting elements should slide out to the right. 
+
+This is where you (and I) say: "But wait! We are updating the DOM like a crazy person. There must be a better way!"
+I will agree with you here. It looks like d3 is updatind each individual element seperately. There must be some magic going on behind the scenes or else this would get very slow. It must be doing something to take care of this problem because the examples on their website, are awe inspiring, and none of them feel slow. 
+"But they are attaching data to the DOM. That can't be good."
+It seems inefficient to attach data to the DOM, since reading from the DOM is one of the most expensive actions you can do. Again, the examples speak for themselves. TODO: research this topic more. 
