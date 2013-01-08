@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Backbone Views</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="bootstrap-1.1.0.min.css">
+
+    <style>
+    h2 { padding-top: 0px; }
+    </style>
+
+  </head>
+
+  <body>
+    <div class="container">
+
+      <p>This Lesson Covers:</p>
+<ul>
+	<li><a href="#views">Backbone Views</a></li>
+</ul>
+<h2 id="views">Backbone Views</h2>
+<p>On a person note, I use views way to much. I am a UI person, so a lot of what I do interacts with the <span class="caps">DOM</span>. Somehow, the way views work just makes more sense then the models and collections.</p>
+<p>Here is your basic view:</p>
+<pre>
+var TotalView = Backbone.View.extend({
+    initialize : function() {
+        //   model.on( event,         callback,    context);
+        this.model.on('change:total', this.update, this);
+
+        this.model.fetch();
+    },
+    update : function(model, total) {
+        this.$el.text(total);
+    }
+});
+
+var totalView = new TotalView({
+    el : '#total',
+    model : totalModel
+});
+</pre>
+<p>Here we have the view to go with our total model. That bottom couple lines I was saying was going to change? We don&#8217;t need that anymore. although, having the view call model.fetch() is not ideal.</p>
+<p>And the view for products?</p>
+<pre>
+var ProductView = Backbone.View.extend({
+    tagName : "li",
+    className : "product",
+    initialize : function() {
+        this.tmpl = function(obj) {
+            return '&lt;h2&gt;' +  obj.title + '&lt;/h2&gt;' + 
+            '&lt;p&gt;' + obj.desc + '&lt;/p&gt;';
+        };
+    },
+    render : function(obj) {
+        this.$el.html(this.tmpl(obj));
+    }
+});
+
+var productView = new ProductView();
+</pre>
+<p>That is pretty much all you need for this page. We are setting up the template and creating a render function. Keep in mind, you will probably want to replace the template with a template library like hogan.js or dust.js.</p>
+<p>We still have to put everything together.</p>
+<pre>
+var AllProducts = Backbone.Model.extend({
+    url : '/products'
+});
+var ProductModel = Backbone.Model.extend({
+    defaults : {
+        desc : 'no description',
+        title : 'no title'
+    }
+});
+var ProductView = Backbone.View.extend({
+    tagName : "li",
+    className : "product",
+    initialize : function() {
+        this.tmpl = function(obj) {
+            return '&lt;h2&gt;' +  obj.title + '&lt;/h2&gt;' + 
+            '&lt;p&gt;' + obj.tags + '&lt;/p&gt;';
+        };
+        this.render();
+    },
+    render : function() {
+        this.$el.html(this.tmpl(this.attributes));
+    }
+});
+var ListView = Backbone.View.extend({
+    el : "#productsList",
+    append : function(html) {
+        this.$el.append(html);
+    }
+});
+
+var productsModel = new AllProducts();
+var productCollection = new (Backbone.Collection.extend({ model : ProductModel }))();
+var productsList = new ListView();
+
+productCollection.on('add', function(product) {
+    productsList.append((new ProductView({ attributes : product.attributes })).el);
+});
+
+productsModel.fetch({
+    success : function (model, products) {
+        productCollection.add(products);
+    }
+});
+</pre>
+<p>Whoa, thats a lot of code just to get some <span class="caps">JSON</span> and render it into html. To do the same thing with just jQuery would only take a couple lines. Let me point out two powerful features you will not get with just jQuery.</p>
+<p>1. Object Oriented<br />
+Lets look at the list view.</p>
+<pre>
+var ListView = Backbone.View.extend({
+    el : "#productsList",
+    append : function(html) {
+        this.$el.append(html);
+    }
+});
+</pre>
+<p>If I want to create another list view with another element all I have to do is seperate the functions from the el.</p>
+<pre>
+var ListView = Backbone.View.extend({
+    append : function(html) {
+        this.$el.append(html);
+    }
+});
+
+var ProductView = ListView.extend({
+    el : "#productsList"
+});
+
+var TagView = ListView.extend({
+    el : "#tagsList"
+});
+</pre>
+<p>Now the two list views share the same append function. This means if we want to change how all the list views work, we only need to change it once, and if the productView breaks, we know it is not a problem with the ListView because the TagView would also have broken.</p>
+<p>2. Flexibility<br />
+Lets pretend we want to add data from a different source. All we would have to do is create a new model, and add the new data to the collection.</p>
+<pre>
+var AllRecipes = Backbone.Model.extend({
+    url : 'http://recipesapp.com/usersrecipes'
+});
+
+var allUsersRecipes = new AllRecipes();
+
+allUsersRecipes.fetch({
+    success : function (model, products) {
+        productCollection.add(products);
+    }
+});
+</pre>
+<p>As long as these new recipes have a title and tags, they will be rendered fine. You could even convert them into something the view could use in the success handler.</p>
+<p>You will find that we will be trading short snippets of code for large structured objects a lot. Yes, we miss out on a cool feature of javascript, doing alot with a couple lines of code, but we will be able to reuse these parts all over our application and in the future.</p>
+<h2 id="soapbox">Thoughts on Reuseability</h2>
+<p>For some of you developing full applications in javascript might feel overwelming but when you are done with a block of code, keep these things in mind:</p>
+<p>1. How will other people read this code<br />
+2. How can other people use this code<br />
+3. How useable will this code be in the future<br />
+4. How well does this code work with code already written</p>
+<p>Try giving yourself a score for each of these. The better the score, the more productive you, and people you are working with, will be.</p>
+
+    </div> <!-- /container -->
+    
+    <div id="footer">
+      <div class="inner">
+        <div class="container">
+          <p>
+            Written in
+            <a href="http://twitter.com/PositivelyCleve">Cleveland</a>, with love,
+            by <a href="http://twitter.com/thecolorblue">@thecolorblue</a>
+            Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License v2.0</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+  </body>
+</html>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Scala School - Crossfilter</title>
+    <title>Javascript School - Crossfilter</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -49,23 +49,6 @@
 <p>Map / Reduce is a blanket term for handling flat lists of data. <br />
 <span class="caps">TODO</span>: was the term map/reduce originated at Google? Verify.</p>
 <p>Generally speaking, a map function pulls all relavent data elements, and the reduce function boils those elements down, combining them or minipulating them in whatever way needed. You can have multiple map functions, that continue to filter out elements, and you can have multiple reduce functions that continue to reduce the data down to pure information. It is designed to be flexible enough to be spread across multiple servers (outside of the scope of client side applications), and therefore, in theory, work well web workers. It also makes it easy to reuse map or reduce functions.</p>
-<h2 id="d3">D3 Graphs</h2>
-<p><span class="caps">OMG</span> D3!</p>
-<p>D3.js is a graphing library that makes building super awesome graphs and visualizations much easier. It also has a different way of thinking about updating the <span class="caps">DOM</span> that is more in tune with animations. You will find that updating the products page to add animation is difficult. JQuery has a nice animation function, and there are always css3 transistions, but it will get crazy pretty quick. You will find that d3 has a harder learning curve to get started, but adding on additions or more complex data sets will be easier.</p>
-<p><span class="caps">TODO</span>: basic d3 graph</p>
-<p>There are two things that are different:</p>
-<p>1. D3 does not have a model. Data is attached to the <span class="caps">DOM</span> element<br />
-2. Updating is a three step process. Find elements / find data, combine and process, flush out un-needed elements.</p>
-<h2 id="totalProducts">Total Products Graph</h2>
-<p><span class="caps">TODO</span>: Pull in json from server</p>
-<p><span class="caps">TODO</span>: crossfilter, sort, or filter from select dropdown box</p>
-<p><span class="caps">TODO</span>: update graph</p>
-<p>This is the part I love. We must first give d3 our new set of elements.</p>
-<p>D3 will merge this with the data it already has attached to the elements it found. It will now create three buckets of elements, new, updating, and exiting(deleting). You can now tell each bucket what to do seperately. New elements you might want to slide in from the right, updating elements should change color, and exiting elements should slide out to the right.</p>
-<p>This is where you (and I) say: &#8220;But wait! We are updating the <span class="caps">DOM</span> like a crazy person. There must be a better way!&#8221;<br />
-I will agree with you here. It looks like d3 is updatind each individual element seperately. There must be some magic going on behind the scenes or else this would get very slow. It must be doing something to take care of this problem because the examples on their website, are awe inspiring, and none of them feel slow. <br />
-&#8220;But they are attaching data to the <span class="caps">DOM</span>. That can&#8217;t be good.&#8221;<br />
-It seems inefficient to attach data to the <span class="caps">DOM</span>, since reading from the <span class="caps">DOM</span> is one of the most expensive actions you can do. Again, the examples speak for themselves. <span class="caps">TODO</span>: research this topic more.</p>
     </div> <!-- /container -->
 
     <div id="footer">

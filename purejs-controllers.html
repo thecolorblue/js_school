@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Scala School - JS Controllers</title>
+    <title>Javascript School - JS Controllers</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -39,6 +39,34 @@
 	<li><a href="#libraries">Libraries</a></li>
 	<li><a href="#strucure">Structure</a></li>
 </ul>
+<h2 id="libraries">Libraries</h2>
+<h2 id="structure">Structure</h2>
+<h3>Events</h3>
+<h3>Modules</h3>
+<h3>Prototype</h3>
+<pre>
+	function Cart(options) {
+		// add any data to the cart here
+		this.name = options.name;
+		this.products = [];
+	}
+
+	Cart.prototype.addToCart = function(product) {
+		this.products.push(product);
+	}
+	Cart.prototype.getTotal = function() {
+		var i,t = this.products.length, products = this.products, total = 0;
+		for(i=0; i&gt;t; i++) {
+			total = total + products[i].price;
+		}
+		return total;
+	}
+	Cart.prototype.checkout = function(creditCard) {
+		creditCard.charge( this.getTotal() );
+	}
+</pre>
+<p>Further Reading:<br />
+<a href="http://www.amazon.com/gp/product/0596806752/ref=as_li_ss_tl?ie=UTF8&amp;tag=bradav-20&amp;linkCode=as2&amp;camp=1789&amp;creative=390957&amp;creativeASIN=0596806752">Javascript Patterns</a> is where I based these examples and is a good read.</p>
     </div> <!-- /container -->
 
     <div id="footer">

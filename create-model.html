@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Scala School - Your First Model</title>
+    <title>Javascript School - Your First Model</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -42,8 +42,8 @@
 	<li><a href="#structure">Javascript Structure</a></li>
 </ul>
 <h2 id="form">The Form</h2>
-<p>The form is nothing to complicated, maining so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and we will pick it up later.</p>
-<p>I have fallen in love with [bower](https://github.com/twitter/bower) which allows you to quickly add all the libraries you need. [Components](https://github.com/component/component) are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone.</p>
+<p>The form is nothing to complicated, mainly so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and the server will save it automatically.</p>
+<p>I have fallen in love with <a href="https://github.com/twitter/bower" title="Twitter&#39;s Bower">bower</a> which allows you to quickly add all the libraries you need. <a href="https://github.com/component/component">Components</a> are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone.</p>
 <p>Anyways, get to your folder in your terminal and install jquery, underscore, and backbone with this:</p>
 <pre>
     $ npm install -g bower
@@ -172,7 +172,6 @@ $form.on('submit', function(e) {
 });
 </pre>
 <p>This breaks up the pyramid look code often gets when using asynchronous calls. It&#8217;s still a little hard to follow.</p>
-<p>This breaks up the pyramid look code often gets when using asynchronous calls. It&#8217;s still a little hard to follow.</p>
 <pre>
 var $form = $("#form");
 
@@ -207,7 +206,6 @@ $form.on('submit', function(e) {
     });
 });
 </pre>
-<p>Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented.</p>
 <p>Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented.</p>
 <pre>
 var createPage = {};

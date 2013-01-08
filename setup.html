@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Scala School - Setup Your Environment</title>
+    <title>Javascript School - Setup Your Environment</title>
     <meta name="description" content="">
     <meta name="author" content="">
 
@@ -41,7 +41,6 @@
 	<li><a href="#express">Install Express</a></li>
 </ul>
 <h2 id="nodejs">Why Node.js</h2>
-<p>tl;dr : It&#8217;s the bomb.</p>
 <p>Node.js is a fresh server development platform. One of the beautiful things about node is that its written in javascript. There are a lot of little things I like about node.js, (npm, web sockets support, streaming <span class="caps">API</span>) but it the main reason we will be using it here is because it is javascript. You can jump into the server side code and tinker around.</p>
 <h2 id="installing">Installing Node</h2>
 <p>The easiest way to install it is to go to nodejs.org/downloads and download whatever pre-built binaries are right for your system. <br />
@@ -50,26 +49,42 @@ I do prefer installing from source. It gives me more control over versioning, I 
 <p>This might not be the best way to do it. Hopefully, a true system admin will edit this to make it a little more complete or <span class="caps">UNIX</span> friendly.</p>
 <p>I am hoping you are at least a little familiar with command line.</p>
 <p>&#8212; Move to the /usr/local directory</p>
-<p>cd /usr/local</p>
+<pre>
+cd /usr/local
+</pre>
 <p>&#8212; Download the source</p>
-<p>git clone https://github.com/joyent/node</p>
+<pre>
+git clone https://github.com/joyent/node
+</pre>
 <p><span class="caps">TODO</span>: git checkout correct stable branch</p>
 <p>&#8212; configure make</p>
-<p>./configure</p>
+<pre>
+./configure
+</pre>
 <p>&#8212; make that shit!</p>
-<p>make</p>
+<pre>
+make
+</pre>
 <p>&#8212; ok, now install</p>
-<p>make install</p>
+<pre>
+make install
+</pre>
 <p>See! Totally painless. You should be able to be at any folder in your terminal and type&#8230;</p>
-<p>node -v</p>
+<pre>
+node -v
+</pre>
 <p>&#8230;and see some info on the version you installed.  Since version (<span class="caps">TODO</span>: find version) you also installed npm, which is node&#8217;s package manager. We will get into npm in a little bit.</p>
 <h2 id="express">Installing Express</h2>
 <p>Express is a light web framework for node.js. I don&#8217;t know if its the best, but it is the most widely used, and is now the defacto framework. I find that it is not that useful past 5-6 pages, but thats just me. Node.js is young and we can&#8217;t expect to have a django or rails right out of the bag. Someone has to build that (<span class="caps">TODO</span>: build django framework for node.js).</p>
 <p>You can do a couple different things, depending on how much you are in love with express. It might not be a bad idea to install express globally.</p>
-<p>npm install -g express</p>
+<pre>
+npm install -g express
+</pre>
 <p>This allows you to run express commands from anywhere. They have a lightweight build tool that can come in handy for starting projects.</p>
 <p>If you are following along with the server code I created for this project, you only need to go to the root folder and type&#8230;</p>
-<p>npm install</p>
+<pre>
+npm install
+</pre>
 <p>&#8230; and npm will take care of the rest. The package.json file tells npm what packages it uses (and describes the project overall. If you make changes, make sure to update your package.json to reflect them).</p>
     </div> <!-- /container -->
 
