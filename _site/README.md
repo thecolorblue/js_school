@@ -1,4 +1,4 @@
-This is Javascript School - a set of lessons covering the Javascript programming language, focused and application development.
+This is Javascript School - a set of lessons covering the Javascript programming language.
 
 We use [jekyll](https://github.com/mojombo/jekyll) to generate the site. In order to build it, you must first install it:
 

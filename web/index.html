@@ -1,0 +1,68 @@
+---
+layout: default
+title: Javascript School
+---
+
+      <div class="hero-unit">
+        <h1>Javascript School!</h1>
+        <p></p>
+      </div>
+
+      <!-- Example row of columns -->
+      <div class="row">
+        <div class="span8">
+<!--           <p><b>Other Languages:</b></p>
+ -->
+          <h2>About</h2>
+          <p>
+            This is an attempt to take a broad look at javascript applications. Javascript is a very flexible language, and there are many ways to solve every problem. This project is here to collect them. Hopefully, you will contribute a little on the subject you know the most, and learn about different ways to write javascript. 
+          </p>
+
+          <h2>Also,</h2>
+          <p>you can learn more on other sites.
+          <ul>
+            <li>
+              <a href="http://oreilly.com/javascript/radarreports/past-present-future-javascript.csp">
+                The Past, Present, and Future of JavaScript
+              </a>
+              <br/>
+              A comprehensive look at JavaScript's development and what lies ahead
+            </li>
+            <li>
+              <a href="http://dailyjs.com/">
+                Daily JS
+              </a>
+              <br/>
+              Javascript Blog
+            </li>
+            <li>
+              <a href="https://github.com/languages/JavaScript/most_watched">
+                Most popular javascript projects on Github
+              </a>
+              <br/>
+              I like to keep track of this list. Wisdom of the crowd, you know. 
+            </li>
+          </ul>
+
+          <p>
+            Inspiration for this project came from <a href="https://github.com/twitter/scala_school">Twitter's Scala School</a>. Try it out. Scala is fun. 
+          </p>
+
+        </div>
+        <div class="span6">
+          <h2>Lessons</h2>
+            <dl>
+              {% for lesson in site.lessons %}
+                <dt><a href="{{ lesson.url }}">{{ lesson.title }}</a></dt>
+                <dd>{{ lesson.desc }}</dd>
+              {% endfor %}
+            </dl>
+       </div>
+      </div>
+    </div> <!-- /container -->
+
+    <!-- banner -->
+    <a href="https://github.com/thecolorblue/js_school"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+
+  </body>
+</html>

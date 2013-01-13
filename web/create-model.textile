@@ -1,7 +1,7 @@
 ---
-	title: Your First Model
-	url: create-model.html
-	desc: jquery, ajax, form, click handler, update, JQXHR, Deferred
+    layout: post
+    title: Your First Model
+    next: backbone-models.html
 ---
 
 This lesson covers:
@@ -12,15 +12,17 @@ This lesson covers:
 
 h2(#form). The Form
 
-The form is nothing to complicated, maining so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and we will pick it up later. 
+The form is nothing to complicated, mainly so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and the server will save it automatically. 
 
-I have fallen in love with [bower](https://github.com/twitter/bower) which allows you to quickly add all the libraries you need. [Components](https://github.com/component/component) are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone. 
+I have fallen in love with "bower (Twitter's Bower)":https://github.com/twitter/bower which allows you to quickly add all the libraries you need. "Components":https://github.com/component/component are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone. 
 
 Anyways, get to your folder in your terminal and install jquery, underscore, and backbone with this:
-	
-	$ npm install -g bower
-	$ bower install backbone
-	$ bower install jquery
+    
+<pre>
+    $ npm install -g bower
+    $ bower install backbone
+    $ bower install jquery
+</pre>
 
 Just as a little side note, there is a little magic happening behind the scenes. There is a .bowerrc file that tells bower where to get the files and where to put them. 
 
@@ -28,64 +30,74 @@ h2(#intercept). Stop That POST
 
 Stoping a http form from going forward is just like preventing the default from any other element event.
 
+<pre>
 $("#form").on('submit', function(e) {
-	e.preventDefault();
+    e.preventDefault();
 });
+</pre>
 
 Another option is to put "return false;" at the bottom of the callback function, but I find it a little easier to read by putting "e.preventDefault()" right at the top. 
 
 Now we need to make our own request, but this time with ajax. I am going to use $.ajax(), but $.post(), will also work. $.ajax is much more flexible, and it's good to learn all the extra settings that are used. 
 
+<pre>
 $.ajax({
-	type : "POST",
-	url  : "/products/create",
-	data : $("#form").serialize(),
-	success : function(res) {
-		// all done
-	}
+    type : "POST",
+    url  : "/products/create",
+    data : $("#form").serialize(),
+    success : function(res) {
+        // all done
+    }
 });
+</pre>
 
 h2(#update). Update Total
 
 Now we need to clear the form...
 
+<pre>
 $("#form").each(function(){
-	if(this.reset) this.reset();
-}); 
+    if(this.reset) this.reset();
+});
+</pre>
 
 ... and update the total counter...
 
+<pre>
 $.ajax({
-	type : "GET",
-	url  : "/products/total",
-	success : function(total) {
-		$("#total").text(total);
-	}
+    type : "GET",
+    url  : "/products/total",
+    success : function(total) {
+        $("#total").text(total);
+    }
 });
+</pre>
 
 All together, the javascript for this page looks like this. 
 
+<pre>
 $("#form").on('submit', function(e) {
-	e.preventDefault();
-	$.ajax({
-		type : "POST",
-		url  : "/products/create",
-		data : $("#form").serialize(),
-		success : function(res) {
-			console.log('response:',res);
-			$("#form").each(function(){
-				if(this.reset) this.reset();
-			});
-			$.ajax({
-				type : "GET",
-				url  : "/products/total",
-				success : function(total) {
-					$("#total").text(total);
-				}
-			});
-		}
-	});	
+    e.preventDefault();
+    $.ajax({
+        type : "POST",
+        url  : "/products/create",
+        data : $("#form").serialize(),
+        success : function(res) {
+            console.log('response:',res);
+            $("#form").each(function(){
+                if(this.reset) this.reset();
+            });
+            $.ajax({
+                type : "GET",
+                url  : "/products/total",
+                success : function(total) {
+                    $("#total").text(total);
+                }
+            });
+        }
+    }); 
 });
+</pre>
 
 h2(#structure). Javascript Structure
 
@@ -93,137 +105,144 @@ But this is ugly. Its hard to reuse any of this code, the flow is not easy to re
 
 First, lets cache some of our jquery DOM lookups. 
 
+<pre>
 var $form = $("#form");
 
 $form.on('submit', function(e) {
-	e.preventDefault();
-	$.ajax({
-		type : "POST",
-		url  : "/products/create",
-		data : $form.serialize(),
-		success : function(res) {
-			$form.each(function(){
-				if(this.reset) this.reset();
-			});
-			$.ajax({
-				type : "GET",
-				url  : "/products/total",
-				success : function(total) {
-					$("#total").text(total);
-				}
-			});
-		}
-	});	
+    e.preventDefault();
+    $.ajax({
+        type : "POST",
+        url  : "/products/create",
+        data : $form.serialize(),
+        success : function(res) {
+            $form.each(function(){
+                if(this.reset) this.reset();
+            });
+            $.ajax({
+                type : "GET",
+                url  : "/products/total",
+                success : function(total) {
+                    $("#total").text(total);
+                }
+            });
+        }
+    }); 
 });
+</pre>
 
 We now only search through the DOM once, for the form. We are using an id, which is pretty quick, but if we had to use a class, or a more complicated search, it would save time, which is noticable for larger js applications. I did not cache $("#total") because we only use it once, but if we needed to access it again, it would be good to cache that also.
 
 Now lets break up the callbacks. We can do this a couple ways.
 
+<pre>
 var $form = $("#form");
 
 $form.on('submit', function(e) {
-	e.preventDefault();
-	var GETCallback = function(total) {
-		$("#total").text(total);
-	};
-	var POSTCallback = function(res) {
-		console.log('post callback');
-		$form.each(function(){
-			if(this.reset) this.reset();
-		});
-		$.ajax(GET);
-	};
+    e.preventDefault();
+    var GETCallback = function(total) {
+        $("#total").text(total);
+    };
+    var POSTCallback = function(res) {
+        console.log('post callback');
+        $form.each(function(){
+            if(this.reset) this.reset();
+        });
+        $.ajax(GET);
+    };
 
-	var GET = {
-		type : "GET",
-		url  : "/products/total",
-		success : GETCallback
-	};
-	var POST = {
-		type : "POST",
-		url  : "/products/create",
-		data : $form.serialize(),
-		success : POSTCallback
-	};
+    var GET = {
+        type : "GET",
+        url  : "/products/total",
+        success : GETCallback
+    };
+    var POST = {
+        type : "POST",
+        url  : "/products/create",
+        data : $form.serialize(),
+        success : POSTCallback
+    };
 
-	$.ajax(POST);
+    $.ajax(POST);
 });
+</pre>
 
 This breaks up the pyramid look code often gets when using asynchronous calls. It's still a little hard to follow. 
 
+<pre>
 var $form = $("#form");
 
 $form.on('submit', function(e) {
-	e.preventDefault();
-	var totalRequest = {
-		type : "GET",
-		url  : "/products/total"
-	};
-	var updateTotal = function(total) {
-		$("#total").text(total);
-	};
+    e.preventDefault();
+    var totalRequest = {
+        type : "GET",
+        url  : "/products/total"
+    };
+    var updateTotal = function(total) {
+        $("#total").text(total);
+    };
 
-	var setRequest = function() {
-		return {
-			type : "POST",
-			url  : "/products/create",
-			data : $form.serialize()
-		};
-	};
-	var clearForm = function(form) {
-		$form.each(function(){
-			if(this.reset) this.reset();
-		});
-	};
+    var setRequest = function() {
+        return {
+            type : "POST",
+            url  : "/products/create",
+            data : $form.serialize()
+        };
+    };
+    var clearForm = function(form) {
+        $form.each(function(){
+            if(this.reset) this.reset();
+        });
+    };
 
-	$.ajax(setRequest())
-	.success(clearForm)
-	.success(function() {
-		$.ajax(totalRequest)
-		.success(updateTotal);
-	});
+    $.ajax(setRequest())
+    .success(clearForm)
+    .success(function() {
+        $.ajax(totalRequest)
+        .success(updateTotal);
+    });
 });
+</pre>
 
 Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented. 
 
+<pre>
 var createPage = {};
 
 createPage = {
-	$form : $("#form"),
-	totalRequest : {
-		type : "GET",
-		url  : "/products/total"
-	},
-	setRequest : function() {
-		return {
-			type : "POST",
-			url  : "/products/create",
-			data : this.$form.serialize()
-		};
-	},
-	updateTotal : function(total) {
-		$("#total").text(total);
-	},
-	clearForm   : function() {
-		this.$form.get(0).reset();
-	},
-	handleSubmit : function(e) {
-		debugger;
-		e.preventDefault();
-		$.ajax(this.setRequest())
-		.success(this.clearForm.bind(createPage))
-		.success(function() {
-			$.ajax(createPage.totalRequest)
-			.success(createPage.updateTotal);
-		});
-	},
-	initialize : function() {
-		this.$form.on('submit', this.handleSubmit.bind(createPage));
-	}
+    $form : $("#form"),
+    totalRequest : {
+        type : "GET",
+        url  : "/products/total"
+    },
+    setRequest : function() {
+        return {
+            type : "POST",
+            url  : "/products/create",
+            data : this.$form.serialize()
+        };
+    },
+    updateTotal : function(total) {
+        $("#total").text(total);
+    },
+    clearForm   : function() {
+        this.$form.get(0).reset();
+    },
+    handleSubmit : function(e) {
+        e.preventDefault();
+        $.ajax(this.setRequest())
+        .success(this.clearForm.bind(createPage))
+        .success(function() {
+            $.ajax(createPage.totalRequest)
+            .success(createPage.updateTotal);
+        });
+    },
+    initialize : function() {
+        this.$form.on('submit', this.handleSubmit.bind(createPage));
+    }
 };
 
 createPage.initialize();
+</pre>
 
 Wow, that was a big change. We now have everything wrapped into one object. This allows us to do two things: 
 
@@ -233,4 +252,3 @@ Wow, that was a big change. We now have everything wrapped into one object. This
 There is a downside and it is mostly related to the way jQuery sets up success callbacks. By default jQuery sets the context of callbacks to the jQXHR, which is the object with information on the request. There are two ways to get around this, use .bind (like I did in the example) or set the context in the options you pass $.ajax. I have had better luck with .bind.
 
 If you are not used to this much structure it can feel weird, and you are probably asking "why are we doing this?".  I will explain more later. 
-

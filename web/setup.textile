@@ -1,7 +1,7 @@
 ---
-  	title: Setup
-  	url: setup.html
-  	desc: Install, node.js, express
+    layout: post
+    title: Setup Your Environment
+    next: create-model.html
 ---
 
 This lesson covers:
@@ -10,8 +10,6 @@ This lesson covers:
 * "Install Express":#express
 
 h2(#nodejs). Why Node.js
-
-tl;dr : It's the bomb.
 
 Node.js is a fresh server development platform. One of the beautiful things about node is that its written in javascript. There are a lot of little things I like about node.js, (npm, web sockets support, streaming API) but it the main reason we will be using it here is because it is javascript. You can jump into the server side code and tinker around.
 
@@ -28,30 +26,42 @@ I am hoping you are at least a little familiar with command line.
 
 -- Move to the /usr/local directory
 
+<pre>
 cd /usr/local
+</pre>
 
 -- Download the source
 
+<pre>
 git clone https://github.com/joyent/node
+</pre>
 
 TODO: git checkout correct stable branch
 
 -- configure make
 
+<pre>
 ./configure
+</pre>
 
 -- make that shit!
 
+<pre>
 make
+</pre>
 
 -- ok, now install
 
+<pre>
 make install
+</pre>
 
 
 See! Totally painless. You should be able to be at any folder in your terminal and type...
 
+<pre>
 node -v
+</pre>
 
 ...and see some info on the version you installed.  Since version (TODO: find version) you also installed npm, which is node's package manager. We will get into npm in a little bit. 
 
@@ -61,12 +71,16 @@ Express is a light web framework for node.js. I don't know if its the best, but 
 
 You can do a couple different things, depending on how much you are in love with express. It might not be a bad idea to install express globally.
 
+<pre>
 npm install -g express
+</pre>
 
 This allows you to run express commands from anywhere. They have a lightweight build tool that can come in handy for starting projects. 
 
 If you are following along with the server code I created for this project, you only need to go to the root folder and type...
 
+<pre>
 npm install
+</pre>
 
 ... and npm will take care of the rest. The package.json file tells npm what packages it uses (and describes the project overall. If you make changes, make sure to update your package.json to reflect them).

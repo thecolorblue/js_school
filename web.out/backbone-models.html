@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Javascript School - Backbone</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="bootstrap-1.1.0.min.css">
+
+  </head>
+
+  <body>
+  
+    <div class="topbar">
+      <div class="fill">
+        <div class="container fixed">
+          <h3><a href="index.html">Backbone</a></h3>
+          <ul class="nav secondary-nav">
+            
+            
+              <li><a href="crossfilter.html">Next&raquo;</a></li>
+            
+          </ul>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 60px;">
+      <p><span class="caps">TODO</span>: Go back and fix the first part of this lesson.<br />
+The code at the bottom works, but I need to make the rest of the page reflect that.</p>
+<p>This lesson covers:</p>
+<ul>
+	<li><a href="#backbone">Backbone.js</a></li>
+	<li><a href="#models">Backbone Models</a></li>
+	<li><a href="#collections">Backbone Collections</a></li>
+</ul>
+<h2 id="backbone">Backbone.js</h2>
+<p>Backbone has taken the javascript world by storm. Personally, backbone.js taught me how to organize my code, and has made working in large teams far easier. It combines powerful prototype features with the simplicity that javascript developers have been accostumbed too.</p>
+<p>Backbone takes a very classical model-view-controller look at client side applications. The focus is not only to create readable code, but to create code that is reuseable across pages and applications. This is a great system if you keep to it. And if you don&#8217;t you end up with some loosely linked modules, that are still useable on their own.</p>
+<p>The view page will walk you through building a backbone application.</p>
+<h2 id="models">Backbone Models</h2>
+<p>Models are the link to the server. Ideally, anything coming in or out of the page, once it has loaded, should go through a model. This will keep you from re-writing $.ajax objects, and should allow you to reuse your models on other pages.</p>
+<p>Even more than that, models should hold onto any data you have, and should be unique to one product or object. Try to avoid using arrays in a model. Any kind of array should be a collection. But I digress.</p>
+<p>We are going to recreate the &#8216;total&#8217; request from the create page in backbone. Backbone models expect to use a rails like backend, the routes should conform to those standards. We can change these defaults but the routing scheme is a good one to know, so that is what we will be using. This example is a bit contrived but it will get us started. Baby steps, baby steps.</p>
+<pre>
+var TotalModel = Backbone.Model.extend({
+    id : 'total',
+    url : '/products/total'
+});
+
+
+var totalModel = new TotalModel();
+
+totalModel.on('change:total', function(model, total) {
+    $("#total").text(total);
+});
+
+totalModel.fetch({
+    success : function (a, b, c) {
+        totalModel.set('total',b);
+    }
+});
+</pre>
+<p>There is a bunch going on here, so let me break it down.</p>
+<pre>
+var TotalModel = Backbone.Model.extend({
+    id : 'total',
+    url : '/products/total'
+
+});
+</pre>
+<p>We first create the prototype for the model. This would usually hold any functions we will need later on, but here we just have a couple settings. There are a lot of functions that we might want to attach to the model, but its a good idea to only stick to these: conversions, validations, computed properties, access control (pulled directly from the backbone website). Anything else should probably be attached to a collection or a view.</p>
+<pre>
+var totalModel = new TotalModel();
+</pre>
+<p>We then create an instance of the model. In theory, we might want multiple instances of a model, one for each product for example. In this case, we only want one thing, the total number of products.</p>
+<pre>
+totalModel.on('change:total', function(model, total) {
+    $("#total").text(total);
+});
+
+totalModel.fetch();
+</pre>
+<p>Finally we setup a listener and tell the model to fetch the total from the server. Both of these will move somewhere else, and the code itself will change.</p>
+<h2 id="collections">Backbone Collections</h2>
+<p><span class="caps">TODO</span>: someone who uses collections should re-write this. I almost never use collections.</p>
+<p>Backbone collections at a very basic level are arrays with some added features.</p>
+<p>Lets jump right into it and then we can break down whats going on.</p>
+<pre>
+var ProductCollection = new Backbone.Collection.extend({
+    model : productModel,
+    comparator : function(product) {
+        return product.title;
+    }
+});
+
+var productCollection = new ProductCollection();
+
+productCollection.fetch();
+</pre>
+<p><span class="caps">TODO</span>: explain whats going on here</p>
+    </div> <!-- /container -->
+
+    <div id="footer">
+      <div class="inner">
+        <div class="container">
+          <footer>
+            <p>
+              Written in
+              <a href="http://twitter.com/PositivelyCleve">Cleveland</a>, with love,
+              by <a href="http://twitter.com/thecolorblue">@thecolorblue</a>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

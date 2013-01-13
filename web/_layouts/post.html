@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Javascript School - {{ page.title }}</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="bootstrap-1.1.0.min.css">
+
+  </head>
+
+  <body>
+  
+    <div class="topbar">
+      <div class="fill">
+        <div class="container fixed">
+          <h3><a href="index.html">{{ page.title }}</a></h3>
+          <ul class="nav secondary-nav">
+            {% if page.prev %}
+              <li><a href="{{ page.prev | replace:'.textile','.html' }}">&laquo;Previous</a></li>
+            {% endif %}
+            {% if page.next %}
+              <li><a href="{{ page.next | replace:'.textile','.html'  }}">Next&raquo;</a></li>
+            {% endif %}
+          </ul>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top: 60px;">
+      {{ content }}
+    </div> <!-- /container -->
+
+    <div id="footer">
+      <div class="inner">
+        <div class="container">
+          <footer>
+            <p>
+              Written in
+              <a href="http://twitter.com/PositivelyCleve">Cleveland</a>, with love,
+              by <a href="http://twitter.com/thecolorblue">@thecolorblue</a>
+            </p>
+          </footer>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>
