@@ -25,7 +25,7 @@
           <ul class="nav secondary-nav">
             
             
-              <li><a href="purejs-model.html">Next&raquo;</a></li>
+              <li><a href="crossfilter.html">Next&raquo;</a></li>
             
           </ul>
 
@@ -39,28 +39,182 @@
 	<li><a href="#graphs">Graphs</a></li>
 	<li><a href="#updating">Updating</a></li>
 	<li><a href="#transitions">Transitions</a></li>
+	<li><a href="#soapbox">Soapbox</a></li>
 </ul>
 <h2 id="graphs">D3 Graphs</h2>
-<p><span class="caps">OMG</span> D3!</p>
-<p>D3.js is a graphing library that makes building super awesome graphs and visualizations much easier. It also has a different way of thinking about updating the <span class="caps">DOM</span> that is more in tune with animations. You will find that updating the products page to add animation is difficult. JQuery has a nice animation function, and there are always css3 transistions, but it will get crazy pretty quick. You will find that d3 has a harder learning curve to get started, but adding on additions or more complex data sets will be easier.</p>
-<p><span class="caps">TODO</span>: basic d3 graph</p>
-<p>There are two things that are different:</p>
-<p>1. D3 does not have a model. Data is attached to the <span class="caps">DOM</span> element<br />
-2. Updating is a three step process. Find elements / find data, combine and process, flush out un-needed elements.</p>
+<p>D3.js is a graphing library that makes building awesome graphs and visualizations much easier. It also has a different way of thinking about updating the <span class="caps">DOM</span> that is more in tune with animations. You will find that updating the products page to add animation is difficult. JQuery has a nice animation function, and there are always css3 transistions, but it will get crazy pretty quick. You will find that d3 has a harder learning curve to get started, but adding on additions or more complex data sets will be easier.</p>
+<p>Here is a graph from the admin page.</p>
+<pre>
+     // calorie graph
+     var titleHeight = 30;
+
+    chart = d3.select("#calorieGraph").append("svg")
+     .attr("class", "chart")
+     .attr("width", 200)
+     .attr("height", (20 * calData.length) + titleHeight );
+
+    x = d3.scale.linear()
+     .domain(d3.extent(calData, function(d) { return d.key; }))
+     .range([0, 200]);
+    var y = d3.scale.ordinal()
+     .domain([0,10])
+     .rangeBands([0, 200]);
+
+     var groups = chart.selectAll("g")
+     .data(calData)
+     .enter().append('g');
+     
+     // create bars
+     groups.append('rect')
+     .attr("y", function(d,i) { return (i * 20) + titleHeight; })
+     .attr('width', function(d) { return (y(d.value)) + 25; })
+     .attr('height', 20);
+</pre>
+<p>It is a very basic bar graph but it introduces a couple things that are central to d3. I have linked the graph to &#8216;calories&#8217; which is one of the inputs on my create page. If you have used something different, and I highly advise that you try something different here, remember to change the names to make sense.</p>
+<p>First we create the element in the <span class="caps">DOM</span>.</p>
+<pre>
+    chart = d3.select("#calorieGraph").append("svg")
+     .attr("class", "chart")
+     .attr("width", 200)
+     .attr("height", (20 * calData.length) + titleHeight );
+</pre>
+<p>we are setting the width and the height, and a class here.</p>
+<pre>
+    x = d3.scale.linear()
+     .domain(d3.extent(calData, function(d) { return d.key; }))
+     .range([0, 200]);
+    var y = d3.scale.ordinal()
+     .domain([0,10])
+     .rangeBands([0, 200]);
+</pre>
+<p>These are helper functions that d3 lets us create. They normalize widths and heights of the bar graph. But we will get into that later.</p>
+<pre>
+     var groups = chart.selectAll("g")
+     .data(calData).enter();
+</pre>
+<p>This is actually where the magic happens. What we are doing is taking what we defined in chart, telling d3 to add a &#8216;g&#8217; element for each object in calData, and selecting the elements we are adding (elements that are &#8216;entering&#8217; the grapth). When we add data d3 seperates the data into three piles: enter, update, and exit. The enter method works like an each loop, everything afterwards is applied to each element in that group. This allows you to animate each group seperately.</p>
+<pre>
+     // create bars
+     groups.append('rect')
+     .attr("y", function(d,i) { return (i * 20) + titleHeight; })
+     .attr('width', function(d) { return (y(d.value)) + 25; })
+     .attr('height', 20);
+
+     // create keys
+     groups.append('text')
+       .attr("dy", "1em")
+       .attr('class','text')
+       .attr('dy', function(d,i) { return (i * 20) + (titleHeight + 15); })
+       .attr('dx', 5)
+       .attr("text-anchor", "end") // text-align: right
+       .text(function(d) { return d.key; });
+
+      chart.append('text')
+       .attr("dy", "1em")
+       .attr('class','title')
+       .attr('dy', 20)
+       .attr('dx', 2)
+       .attr("text-anchor", "start") // text-align: right
+       .text("Calories");
+</pre>
+<p>And finally we get down to business. We are appending elements (either &#8217;rect&#8217;s or &#8217;text&#8217;s) and then setting attributes on each of them.</p>
+<p>There are three things that are different:</p>
+<p>1. We are using svg instead of divs.<br />
+2. D3 does not have a model. Data is attached to the <span class="caps">DOM</span> element<br />
+3. Updating is a three step process. Find elements / find data, combine and process, flush out un-needed elements.</p>
 <h2 id="updating">Updating</h2>
 <p><span class="caps">TODO</span></p>
 <h2 id="transitions">Transitions</h2>
 <p><span class="caps">TODO</span></p>
 <h2 id="totalProducts">Total Products Graph</h2>
-<p><span class="caps">TODO</span>: Pull in json from server</p>
-<p><span class="caps">TODO</span>: crossfilter, sort, or filter from select dropdown box</p>
-<p><span class="caps">TODO</span>: update graph</p>
-<p>This is the part I love. We must first give d3 our new set of elements.</p>
-<p>D3 will merge this with the data it already has attached to the elements it found. It will now create three buckets of elements, new, updating, and exiting(deleting). You can now tell each bucket what to do seperately. New elements you might want to slide in from the right, updating elements should change color, and exiting elements should slide out to the right.</p>
+<pre>
+  d3.json('/products',function(d) {});
+</pre>
+<p>With d3, it is easy to pull data from the server, although you do not have many options. They work similar to $.json(), except there is also, .text(), .html(), .xml(), .tsv()&#8230; You can also use the native <span class="caps">XHR</span> object with d3.xhr.</p>
+<p>Inside the callback you want to put all of your graph code. The next step is setting up the data for the graph. We will be using crossfilter this time, and go deeper into it later.</p>
+<pre>
+    calorie = cf.dimension(function(d) { return +d.calories; });
+    calories = calorie.group();
+    var calData = calories.all();
+</pre>
+<p>Basically, we are creating key value pairs for the calorie attributes of each data element. calData ends up looking like this:</p>
+<pre>
+[
+	{
+		key : "500",
+		value : "2"
+	},
+	{
+		key : "600",
+		value : "7"
+	}
+]
+</pre>
+<p>Key is equal to all the d.calories, and value is how many times they appear. You will want to play around with this, of course, for other graphs, but the important thing is that one value in each object can be used as a key, or a unique identifier.</p>
+<p>The whole thing together looks like this:</p>
+<pre>
+  d3.json('/products',function(d) { 
+    cf = crossfilter(d);
+
+    calorie = cf.dimension(function(d) { return d.calories; });
+    calories = calorie.group();
+    var calData = calories.all();
+
+    category = cf.dimension(function(d) { return d.category; });
+    categories = category.group();
+    var catData = categories.all();
+
+     // calorie graph
+     var titleHeight = 30;
+
+    chart = d3.select("#calorieGraph").append("svg")
+     .attr("class", "chart")
+     .attr("width", 200)
+     .attr("height", (20 * calData.length) + titleHeight );
+
+    x = d3.scale.linear()
+     .domain(d3.extent(calData, function(d) { return d.key; }))
+     .range([0, 200]);
+    var y = d3.scale.ordinal()
+     .domain([0,10])
+     .rangeBands([0, 200]);
+
+     var groups = chart.selectAll("g")
+     .data(calData)
+     .enter();
+     
+     // create bars
+     groups.append('rect')
+     .attr("y", function(d,i) { return (i * 20) + titleHeight; })
+     .attr('width', function(d) { return (y(d.value)) + 25; })
+     .attr('height', 20);
+
+     // create keys
+     groups.append('text')
+       .attr("dy", "1em")
+       .attr('class','text')
+       .attr('dy', function(d,i) { return (i * 20) + (titleHeight + 15); })
+       .attr('dx', 5)
+       .attr("text-anchor", "end") // text-align: right
+       .text(function(d) { return d.key; });
+
+      chart.append('text')
+       .attr("dy", "1em")
+       .attr('class','title')
+       .attr('dy', 20)
+       .attr('dx', 2)
+       .attr("text-anchor", "start") // text-align: right
+       .text("Calories");
+
+  });
+</pre>
 <p>This is where you (and I) say: &#8220;But wait! We are updating the <span class="caps">DOM</span> like a crazy person. There must be a better way!&#8221;<br />
 I will agree with you here. It looks like d3 is updatind each individual element seperately. There must be some magic going on behind the scenes or else this would get very slow. It must be doing something to take care of this problem because the examples on their website, are awe inspiring, and none of them feel slow. <br />
 &#8220;But they are attaching data to the <span class="caps">DOM</span>. That can&#8217;t be good.&#8221;<br />
 It seems inefficient to attach data to the <span class="caps">DOM</span>, since reading from the <span class="caps">DOM</span> is one of the most expensive actions you can do. Again, the examples speak for themselves. <span class="caps">TODO</span>: research this topic more.</p>
+<h3 id="soapbox">#Soapbox</h3>
+<p>I think this is a good time to bring something up. Although it is great to practice the craft of creating javascript with graphs like these, it is important to remember the art. What do your users want to see? That is the graph you should build, not the one that looks the best, or is the easiest.</p>
+<p>There is no such thing as a great website about nothing.</p>
     </div> <!-- /container -->
 
     <div id="footer">
