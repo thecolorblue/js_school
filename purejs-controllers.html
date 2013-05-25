@@ -36,12 +36,22 @@
     <div class="container" style="padding-top: 60px;">
       <p>This lesson covers:</p>
 <ul>
+	<li><a href="#Controllers">Controllers</a></li>
 	<li><a href="#libraries">Libraries</a></li>
 	<li><a href="#strucure">Structure</a></li>
+	<li><a href="#events">Events</a></li>
+	<li><a href="#modules">Modules</a></li>
+	<li><a href="#prototype">Prototype</a></li>
+	<li><a href="#when">When To Use Prototype</a></li>
 </ul>
+<h2 id="Controllers">Controllers</h2>
+<p>Think of controllers as the glue between your models and your views. For those who have done some project management, or worked with a team of developers, the flow of controllers should ready like business rules for the application.</p>
+&#8220;When this button is clicked, add that product to that cart&#8221;
+&#8220;When this button is clicked, open this page with that products details&#8221;
+&#8220;When the page is loaded, open this page and show all the products&#8221;
+<p>This same text can be used to write your tests later, and and should correspond to what you want your app to do. There is no such thing as a great app that does nothing.</p>
 <h2 id="libraries">Libraries</h2>
-<h2 id="structure">Structure</h2>
-<h3>Events</h3>
+<h3 id="events">Events</h3>
 <p>Straight from Backbone.</p>
 <pre>
 	 var Events = Backbone.Events = {
@@ -147,8 +157,9 @@
     }
   };
 </pre>
-<h3>Modules</h3>
-<p>Straight from <a href="http://docs.jquery.com/Plugins/Authoring#Plugin_Methods">jQuery&#8217;s guide for plugins</a>.</p>
+<h3 id="modules">Modules</h3>
+<p>This example is from the old jquery plugin guide, but it is still relavent. Here is <a href="http://learn.jquery.com/plugins/">jQuery&#8217;s new guide for plugins</a>.</p>
+<p><span class="caps">TODO</span>: update this section</p>
 <pre>
 (function( $ ){
 
@@ -213,7 +224,7 @@
 
 })( jQuery );
 </pre>
-<h3>Prototype</h3>
+<h3 id="prototype">Prototype</h3>
 <p>I don&#8217;t know why but when people describe the prototype object they always make it complicated. Granted, it is there to add some layer of object orientation to Javascript, but it is not like Java&#8217;s classes. It is simpiler.</p>
 <pre>
 	function Cart(options) {
@@ -238,10 +249,12 @@
 
 	var shoppingCart = new Cart({ name: 'shopping cart' });
 
-	shoppingCart.addToCart(new Product({ title: "King Wizard", artist: "Kid Cudi", total : 15 }));
+	shoppingCart.addToCart(new Product({ title: "King Wizard", artist: "Kid Cudi", price : 15 }));
 </pre>
-<p>As you can see we are simply adding onto the prototype object attached to the function Cart. That is it. Those additions are passed onto any new Cart as methods. <span class="caps">BAM</span>. That&#8217;s it.</p>
+<p>As you can see, we are simply adding onto the prototype object attached to the function Cart. Those additions are passed onto any new Cart as methods. That&#8217;s it.</p>
 <p>Conceptually, its almost the same as your C++ or Python classes. There is a little magic that is needed to get inheritance working the way a server side developer would expect, but it is there.</p>
+<h3 id="when">When to use Prototype</h3>
+<p>Honestly, if you are not writing a web application with a lot of moving parts, you should avoid using the prototype object. If you are only creating one instance of the cart, in the example above, and one or two products, you will not see the performance increase. In fact, I have seen some libraries that a little like prototypes, there is a function and an object of functions attached to it, but they just don&#8217;t use the &#8216;new&#8217; keyword.</p>
 <p>Further Reading:<br />
 <a href="http://www.amazon.com/gp/product/0596806752/ref=as_li_ss_tl?ie=UTF8&amp;tag=bradav-20&amp;linkCode=as2&amp;camp=1789&amp;creative=390957&amp;creativeASIN=0596806752">Javascript Patterns</a> is where I based these examples and is a good read.</p>
     </div> <!-- /container -->

@@ -34,10 +34,45 @@
     <div class="container" style="padding-top: 60px;">
       <p>This lesson covers:</p>
 <ul>
+	<li><a href="#Views">Views</a></li>
+	<li><a href="#DOM">Create a New <span class="caps">DOM</span> Interface</a></li>
 	<li><a href="#sizzle">Sizzle</a></li>
 	<li><a href="#htmlfive">HTML5</a></li>
 	<li><a href="#svg"><span class="caps">SVG</span></a></li>
 </ul>
+<h2 id="Views">Views</h2>
+<p>Views are the interface to the document object model (<span class="caps">DOM</span>). This is how the browser renders each page, it takes html and turns it into a document. It also provides a low level interface to javascript to change the <span class="caps">DOM</span>.</p>
+<p>You can find more details about the <span class="caps">DOM</span> interface <a href="https://developer.mozilla.org/en-US/docs/DOM/DOM_Reference">here</a>.</p>
+<p>The interface is cumbersome, and historically was not consistent between browsers. There are now very well laid out standards for the <span class="caps">DOM</span> but you still want to make it easier on yourself to make edits. Some features you will be using a lot. Others you might not use at all. So each application you right should have a set of functions and objects that make interacting with the <span class="caps">DOM</span> easier.</p>
+<p>jQuery is a great example of make the <span class="caps">DOM</span> easier to work with.</p>
+<pre>
+	// native DOM interface
+	document.getElementById('content').getElementByClassName('wrap').classList.add('inner');
+
+	// jQuery
+	$('#content').find('.wrap').addClass('inner');
+</pre>
+<p>As you can see, using jQuery is much easier to read and is less to type. Even though the <span class="caps">DOM</span> interface is more explicit, in jQuery, the statement is just as clear.</p>
+<p>The D3.js library is very similar to jQuery, except is focused on Scalable Vector Graphics (<span class="caps">SVG</span>). <span class="caps">SVG</span> is another node, similar to a div, but has a different way to handle layouts and different child nodes. It&#8217;s designed to render graphics.</p>
+<h2 id="DOM">Create A New <span class="caps">DOM</span> Interface</h2>
+<p>Its good to know ahead of time what you want this app to do. How many buttons are you going to have? How are you going to arrange them.</p>
+<p>If you know you will have a menu, you will get better performance by attaching only one event listener. Also, if you want to add to the menu, you will not have to reattach any new event listeners.</p>
+<pre>
+	var menu = document.getElementById('menu');
+
+	menu.addEventListener('click',function(event) {
+		// find your element
+		var menuItem = event.target;
+
+		// tell your controller what happened
+		// this is an example
+		app.triggerEvent('click', 'menu', event.target, event);
+
+
+	}, false);
+</pre>
+<p>For more info on the addEventListner method <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener" title="MDN">click here</a>.</p>
+<p>This is a simple example, but its supposed to be. The controller, here is is called &#8220;app&#8221;, should worry about what happens after the event, the view should properly tell the controller what happened. Here, the controller object has a crazy trigger interface that takes the event name, the context, the element target, and the event object. Usually, the controller does not need to know this much info. You should really only send enough data for the controller to figure out what it needs to do.</p>
     </div> <!-- /container -->
 
     <div id="footer">
