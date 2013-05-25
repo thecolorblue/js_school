@@ -43,4 +43,103 @@ h3.
 
 h2(#formdata). FormData
 
-the "FormData" object is relatively new, but it fixes one of fundemental bugs with the XMLHTTPRequest. With the FormData object you can now upload files in a clean way in javascript and AJAX. 
+the "FormData" object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and AJAX without having to use iframes or flash.
+
+h2(#models). Models
+
+Now lets talk about models. Forget it, let me should you a model. 
+
+<pre>
+	var product = {
+		title : 'sushi',
+		calories : 500,
+		category : 'japaness',
+		description : 'california roll'
+	};
+</pre>
+
+There are not really strict rules on what a model has to do in javascript. This will mostly work against you because you will have to make your own. 
+
+Generally, your model should make it really easy for your controller to save, edit, delete, or create data. Everything else is up to you. 
+
+So lets make this model do something. First, lets create a prototype. 
+
+<pre>
+	var Product = function(options) {
+		if(options.title)       this.title = options.options;
+		if(options.calories)    this.calories = options.calories;
+		if(options.category)    this.category = options.category;
+		if(options.description) this.description = options.description;
+	};
+	var product = new Product({
+		title : 'sushi',
+		calories : 500,
+		category : 'japaness',
+		description : 'california roll'
+	});
+</pre>
+
+Now we can add some validation. 
+
+<pre>
+	var Product = function(options) {
+		if(options.title && typeof options.title === 'string') {
+			this.title = options.options;
+		}
+		if(options.calories && typeof options.calories === 'number') {
+			this.calories = options.calories;
+		}
+		if(options.category && typeof options.category === 'string') {
+			this.category = options.category;
+		}
+		if(options.description && typeof options.description === 'string') {
+			this.description = options.description;
+		}
+	};
+</pre>
+
+Notice, this just made our init function much bigger and much harder to read. Only do this kind of validating if you have to. 
+
+Lets add some functionality.
+
+<pre>
+	var Product = function(options) {
+		...
+	};
+	Product.prototype.readyToEat = false;
+	Product.prototype.roll = function() {
+		this.readyToEat = true;
+	}
+</pre>
+
+Now we can do something with our food. 
+
+<pre>
+	console.log(product.readyToEat); // returns false
+	product.roll();
+	console.log(product.readyToEat); // this will return true
+</pre>
+
+I'm getting bored. Lets make this useful. 
+
+<pre>
+	var Product = function(options) {
+		if(options.title && typeof options.title === 'string') {
+			this.title = options.options;
+		}
+		if(options.calories && typeof options.calories === 'number') {
+			this.calories = options.calories;
+		}
+		if(options.category && typeof options.category === 'string') {
+			this.category = options.category;
+		}
+		if(options.description && typeof options.description === 'string') {
+			this.description = options.description;
+		}
+		if(options.price && typeof options.description === 'number') {
+			this.price = options.price;
+		}
+	};	
+</pre>
+
+Commerce! You can probably think of some things this model can do. Be added to a cart. Added to a meal. we could at it do a catalog of products. 

@@ -6,14 +6,27 @@
 
 
 This lesson covers:
+* "Controllers":#Controllers
 * "Libraries":#libraries
 * "Structure":#strucure
+* "Events":#events
+* "Modules":#modules
+* "Prototype":#prototype
+* "When To Use Prototype":#when
+
+h2(#Controllers). Controllers
+
+Think of controllers as the glue between your models and your views. For those who have done some project management, or worked with a team of developers, the flow of controllers should ready like business rules for the application. 
+  
+  "When this button is clicked, add that product to that cart"
+  "When this button is clicked, open this page with that products details"
+  "When the page is loaded, open this page and show all the products"
+
+This same text can be used to write your tests later, and and should correspond to what you want your app to do. There is no such thing as a great app that does nothing. 
 
 h2(#libraries). Libraries
 
-h2(#structure). Structure
-
-h3. Events
+h3(#events). Events
 
 Straight from Backbone.
 
@@ -122,9 +135,11 @@ Straight from Backbone.
   };
 </pre>
 
-h3. Modules
+h3(#modules). Modules
 
-Straight from "jQuery's guide for plugins":http://docs.jquery.com/Plugins/Authoring#Plugin_Methods.
+This example is from the old jquery plugin guide, but it is still relavent. Here is "jQuery's new guide for plugins":http://learn.jquery.com/plugins/.
+
+TODO: update this section
 
 <pre>
 (function( $ ){
@@ -191,7 +206,7 @@ Straight from "jQuery's guide for plugins":http://docs.jquery.com/Plugins/Author
 })( jQuery );
 </pre>
 
-h3. Prototype
+h3(#prototype). Prototype
 
 I don't know why but when people describe the prototype object they always make it complicated. Granted, it is there to add some layer of object orientation to Javascript, but it is not like Java's classes. It is simpiler. 
 
@@ -218,12 +233,16 @@ I don't know why but when people describe the prototype object they always make 
 
 	var shoppingCart = new Cart({ name: 'shopping cart' });
 
-	shoppingCart.addToCart(new Product({ title: "King Wizard", artist: "Kid Cudi", total : 15 }));
+	shoppingCart.addToCart(new Product({ title: "King Wizard", artist: "Kid Cudi", price : 15 }));
 </pre>
 
-As you can see we are simply adding onto the prototype object attached to the function Cart. That is it. Those additions are passed onto any new Cart as methods. BAM. That's it. 
+As you can see, we are simply adding onto the prototype object attached to the function Cart. Those additions are passed onto any new Cart as methods. That's it. 
 
 Conceptually, its almost the same as your C++ or Python classes. There is a little magic that is needed to get inheritance working the way a server side developer would expect, but it is there. 
+
+h3(#when). When to use Prototype
+
+Honestly, if you are not writing a web application with a lot of moving parts, you should avoid using the prototype object. If you are only creating one instance of the cart, in the example above, and one or two products, you will not see the performance increase. In fact, I have seen some libraries that a little like prototypes, there is a function and an object of functions attached to it, but they just don't use the 'new' keyword. 
 
 
 Further Reading:
