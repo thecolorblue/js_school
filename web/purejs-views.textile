@@ -22,13 +22,13 @@ The interface is cumbersome, and historically was not consistent between browser
 
 jQuery is a great example of make the DOM easier to work with. 
 
-<pre>
+{% highlight javascript %}
 	// native DOM interface
 	document.getElementById('content').getElementByClassName('wrap').classList.add('inner');
 
 	// jQuery
 	$('#content').find('.wrap').addClass('inner');
-</pre>
+{% endhighlight %}
 
 As you can see, using jQuery is much easier to read and is less to type. Even though the DOM interface is more explicit, in jQuery, the statement is just as clear. 
 
@@ -40,7 +40,7 @@ Its good to know ahead of time what you want this app to do. How many buttons ar
 
 If you know you will have a menu, you will get better performance by attaching only one event listener. Also, if you want to add to the menu, you will not have to reattach any new event listeners. 
 
-<pre>
+{% highlight javascript %}
 	var menu = document.getElementById('menu');
 
 	menu.addEventListener('click',function(event) {
@@ -53,9 +53,24 @@ If you know you will have a menu, you will get better performance by attaching o
 
 
 	}, false);
-</pre>
+{% endhighlight %}
 
 For more info on the addEventListner method "click here (MDN)":https://developer.mozilla.org/en-US/docs/Web/API/EventTarget.addEventListener.
 
 This is a simple example, but its supposed to be. The controller, here is is called "app", should worry about what happens after the event, the view should properly tell the controller what happened. Here, the controller object has a crazy trigger interface that takes the event name, the context, the element target, and the event object. Usually, the controller does not need to know this much info. You should really only send enough data for the controller to figure out what it needs to do. 
 
+h2(#forms). Forms
+
+TODO: write this section
+
+h3. document.forms
+
+h3. Form Input Types
+
+h3. Input Types
+
+h3. Input Validation
+
+h2(#formdata). FormData
+
+the "FormData" object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and AJAX without having to use iframes or flash.

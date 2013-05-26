@@ -13,7 +13,7 @@
 
     <!-- Le styles -->
     <link rel="stylesheet" href="bootstrap-1.1.0.min.css">
-
+    <link rel="stylesheet" type="text/css" href="pygment.css">
   </head>
 
   <body>
@@ -58,11 +58,6 @@ xhr.onload = function(e) {
 }
 xhr.send();
 </pre>
-<h2 id="forms">Forms</h2>
-<h3>document.forms</h3>
-<h3></h3>
-<h2 id="formdata">FormData</h2>
-<p>the &#8220;FormData&#8221; object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and <span class="caps">AJAX</span> without having to use iframes or flash.</p>
 <h2 id="models">Models</h2>
 <p>Now lets talk about models. Forget it, let me should you a model.</p>
 <pre>
@@ -145,6 +140,14 @@ xhr.send();
 	};	
 </pre>
 <p>Commerce! You can probably think of some things this model can do. Be added to a cart. Added to a meal. we could at it do a catalog of products.</p>
+<p>Also, we can easily send this with the XMLHTTPRequest object.</p>
+<pre>
+	var xhr = new XMLHttpRequest();
+	
+	xhr.open("post", function(res){console.log(res); }, true);
+
+	xhr.send(JSON.strinify(product));
+</pre>
     </div> <!-- /container -->
 
     <div id="footer">

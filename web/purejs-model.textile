@@ -35,16 +35,6 @@ xhr.onload = function(e) {
 xhr.send();
 </pre>
 
-h2(#forms). Forms
-
-h3. document.forms
-
-h3. 
-
-h2(#formdata). FormData
-
-the "FormData" object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and AJAX without having to use iframes or flash.
-
 h2(#models). Models
 
 Now lets talk about models. Forget it, let me should you a model. 
@@ -143,3 +133,13 @@ I'm getting bored. Lets make this useful.
 </pre>
 
 Commerce! You can probably think of some things this model can do. Be added to a cart. Added to a meal. we could at it do a catalog of products. 
+
+Also, we can easily send this with the XMLHTTPRequest object.
+
+<pre>
+	var xhr = new XMLHttpRequest();
+	
+	xhr.open("post", function(res){console.log(res); }, true);
+
+	xhr.send(JSON.strinify(product));
+</pre>
