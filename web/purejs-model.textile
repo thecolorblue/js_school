@@ -24,7 +24,7 @@ Side note: one of the things people did not like about jQuery, early on, was tha
 
 Lets jump right in. How do we make a request like we did at the very beginning.
 
-<pre>
+{% highlight javascript %}
 var xhr = new XMLHttpRequest();
 xhr.open("GET", "/product/total", true);
 xhr.responseType = "arraybuffer"; 
@@ -33,20 +33,20 @@ xhr.onload = function(e) {
   /* ... */
 }
 xhr.send();
-</pre>
+{% endhighlight %}
 
 h2(#models). Models
 
 Now lets talk about models. Forget it, let me should you a model. 
 
-<pre>
+{% highlight javascript %}
 	var product = {
 		title : 'sushi',
 		calories : 500,
 		category : 'japaness',
 		description : 'california roll'
 	};
-</pre>
+{% endhighlight %}
 
 There are not really strict rules on what a model has to do in javascript. This will mostly work against you because you will have to make your own. 
 
@@ -54,7 +54,7 @@ Generally, your model should make it really easy for your controller to save, ed
 
 So lets make this model do something. First, lets create a prototype. 
 
-<pre>
+{% highlight javascript %}
 	var Product = function(options) {
 		if(options.title)       this.title = options.options;
 		if(options.calories)    this.calories = options.calories;
@@ -67,11 +67,11 @@ So lets make this model do something. First, lets create a prototype.
 		category : 'japaness',
 		description : 'california roll'
 	});
-</pre>
+{% endhighlight %}
 
 Now we can add some validation. 
 
-<pre>
+{% highlight javascript %}
 	var Product = function(options) {
 		if(options.title && typeof options.title === 'string') {
 			this.title = options.options;
@@ -86,13 +86,13 @@ Now we can add some validation.
 			this.description = options.description;
 		}
 	};
-</pre>
+{% endhighlight %}
 
 Notice, this just made our init function much bigger and much harder to read. Only do this kind of validating if you have to. 
 
 Lets add some functionality.
 
-<pre>
+{% highlight javascript %}
 	var Product = function(options) {
 		...
 	};
@@ -100,19 +100,19 @@ Lets add some functionality.
 	Product.prototype.roll = function() {
 		this.readyToEat = true;
 	}
-</pre>
+{% endhighlight %}
 
 Now we can do something with our food. 
 
-<pre>
+{% highlight javascript %}
 	console.log(product.readyToEat); // returns false
 	product.roll();
 	console.log(product.readyToEat); // this will return true
-</pre>
+{% endhighlight %}
 
 I'm getting bored. Lets make this useful. 
 
-<pre>
+{% highlight javascript %}
 	var Product = function(options) {
 		if(options.title && typeof options.title === 'string') {
 			this.title = options.options;
@@ -130,16 +130,23 @@ I'm getting bored. Lets make this useful.
 			this.price = options.price;
 		}
 	};	
-</pre>
+{% endhighlight %}
 
-Commerce! You can probably think of some things this model can do. Be added to a cart. Added to a meal. we could at it do a catalog of products. 
+Commerce! You can probably think of some things this model can do. Add to a cart. Add to a meal. Add it to a menu. 
 
 Also, we can easily send this with the XMLHTTPRequest object.
 
-<pre>
+{% highlight javascript %}
+	var serialize = function(obj) {
+		var str = [];
+		for(var p in obj)
+		 str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+		return str.join("&");
+	}
+
 	var xhr = new XMLHttpRequest();
 	
 	xhr.open("post", function(res){console.log(res); }, true);
 
-	xhr.send(JSON.strinify(product));
-</pre>
+	xhr.send(serialize(product));
+{% endhighlight %}

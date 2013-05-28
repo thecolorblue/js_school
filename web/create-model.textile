@@ -18,11 +18,11 @@ I have fallen in love with "bower (Twitter's Bower)":https://github.com/twitter/
 
 Anyways, get to your folder in your terminal and install jquery, underscore, and backbone with this:
     
-<pre>
+{% highlight javascript %}
     $ npm install -g bower
     $ bower install backbone
     $ bower install jquery
-</pre>
+{% endhighlight %}
 
 Just as a little side note, there is a little magic happening behind the scenes. There is a .bowerrc file that tells bower where to get the files and where to put them. 
 
@@ -30,17 +30,17 @@ h2(#intercept). Stop That POST
 
 Stoping a http form from going forward is just like preventing the default from any other element event.
 
-<pre>
+{% highlight javascript %}
 $("#form").on('submit', function(e) {
     e.preventDefault();
 });
-</pre>
+{% endhighlight %}
 
 Another option is to put "return false;" at the bottom of the callback function, but I find it a little easier to read by putting "e.preventDefault()" right at the top. 
 
 Now we need to make our own request, but this time with ajax. I am going to use $.ajax(), but $.post(), will also work. $.ajax is much more flexible, and it's good to learn all the extra settings that are used. 
 
-<pre>
+{% highlight javascript %}
 $.ajax({
     type : "POST",
     url  : "/products/create",
@@ -49,21 +49,21 @@ $.ajax({
         // all done
     }
 });
-</pre>
+{% endhighlight %}
 
 h2(#update). Update Total
 
 Now we need to clear the form...
 
-<pre>
+{% highlight javascript %}
 $("#form").each(function(){
     if(this.reset) this.reset();
 });
-</pre>
+{% endhighlight %}
 
 ... and update the total counter...
 
-<pre>
+{% highlight javascript %}
 $.ajax({
     type : "GET",
     url  : "/products/total",
@@ -71,11 +71,11 @@ $.ajax({
         $("#total").text(total);
     }
 });
-</pre>
+{% endhighlight %}
 
 All together, the javascript for this page looks like this. 
 
-<pre>
+{% highlight javascript %}
 $("#form").on('submit', function(e) {
     e.preventDefault();
     $.ajax({
@@ -97,7 +97,7 @@ $("#form").on('submit', function(e) {
         }
     }); 
 });
-</pre>
+{% endhighlight %}
 
 h2(#structure). Javascript Structure
 
@@ -105,7 +105,7 @@ But this is ugly. Its hard to reuse any of this code, the flow is not easy to re
 
 First, lets cache some of our jquery DOM lookups. 
 
-<pre>
+{% highlight javascript %}
 var $form = $("#form");
 
 $form.on('submit', function(e) {
@@ -128,13 +128,13 @@ $form.on('submit', function(e) {
         }
     }); 
 });
-</pre>
+{% endhighlight %}
 
 We now only search through the DOM once, for the form. We are using an id, which is pretty quick, but if we had to use a class, or a more complicated search, it would save time, which is noticable for larger js applications. I did not cache $("#total") because we only use it once, but if we needed to access it again, it would be good to cache that also.
 
 Now lets break up the callbacks. We can do this a couple ways.
 
-<pre>
+{% highlight javascript %}
 var $form = $("#form");
 
 $form.on('submit', function(e) {
@@ -164,11 +164,11 @@ $form.on('submit', function(e) {
 
     $.ajax(POST);
 });
-</pre>
+{% endhighlight %}
 
 This breaks up the pyramid look code often gets when using asynchronous calls. It's still a little hard to follow. 
 
-<pre>
+{% highlight javascript %}
 var $form = $("#form");
 
 $form.on('submit', function(e) {
@@ -201,11 +201,11 @@ $form.on('submit', function(e) {
         .success(updateTotal);
     });
 });
-</pre>
+{% endhighlight %}
 
 Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented. 
 
-<pre>
+{% highlight javascript %}
 var createPage = {};
 
 createPage = {
@@ -242,7 +242,7 @@ createPage = {
 };
 
 createPage.initialize();
-</pre>
+{% endhighlight %}
 
 Wow, that was a big change. We now have everything wrapped into one object. This allows us to do two things: 
 

@@ -29,7 +29,7 @@ Even more than that, models should hold onto any data you have, and should be un
 
 We are going to recreate the 'total' request from the create page in backbone. Backbone models expect to use a rails like backend, the routes should conform to those standards. We can change these defaults but the routing scheme is a good one to know, so that is what we will be using. This example is a bit contrived but it will get us started. Baby steps, baby steps. 
 
-<pre>
+{% highlight javascript %}
 var TotalModel = Backbone.Model.extend({
     id : 'total',
     url : '/products/total'
@@ -47,33 +47,33 @@ totalModel.fetch({
         totalModel.set('total',b);
     }
 });
-</pre>
+{% endhighlight %}
 
 There is a bunch going on here, so let me break it down. 
 
-<pre>
+{% highlight javascript %}
 var TotalModel = Backbone.Model.extend({
     id : 'total',
     url : '/products/total'
 
 });
-</pre>
+{% endhighlight %}
 
 We first create the prototype for the model. This would usually hold any functions we will need later on, but here we just have a couple settings. There are a lot of functions that we might want to attach to the model, but its a good idea to only stick to these: conversions, validations, computed properties, access control (pulled directly from the backbone website). Anything else should probably be attached to a collection or a view. 
 
-<pre>
+{% highlight javascript %}
 var totalModel = new TotalModel();
-</pre>
+{% endhighlight %}
 
 We then create an instance of the model. In theory, we might want multiple instances of a model, one for each product for example. In this case, we only want one thing, the total number of products.
 
-<pre>
+{% highlight javascript %}
 totalModel.on('change:total', function(model, total) {
     $("#total").text(total);
 });
 
 totalModel.fetch();
-</pre>
+{% endhighlight %}
 
 Finally we setup a listener and tell the model to fetch the total from the server. Both of these will move somewhere else, and the code itself will change. 
 
@@ -85,7 +85,7 @@ Backbone collections at a very basic level are arrays with some added features.
 
 Lets jump right into it and then we can break down whats going on.
 
-<pre>
+{% highlight javascript %}
 var ProductCollection = new Backbone.Collection.extend({
     model : productModel,
     comparator : function(product) {
@@ -96,7 +96,7 @@ var ProductCollection = new Backbone.Collection.extend({
 var productCollection = new ProductCollection();
 
 productCollection.fetch();
-</pre>
+{% endhighlight %}
 
 TODO: explain whats going on here
 

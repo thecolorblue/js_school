@@ -30,7 +30,7 @@ h3(#events). Events
 
 Straight from Backbone.
 
-<pre>
+{% highlight javascript %}
 	 var Events = Backbone.Events = {
 
     // Bind one or more space separated events, or an events map,
@@ -133,7 +133,7 @@ Straight from Backbone.
       return this;
     }
   };
-</pre>
+{% endhighlight %}
 
 h3(#modules). Modules
 
@@ -141,7 +141,7 @@ This example is from the old jquery plugin guide, but it is still relavent. Here
 
 TODO: update this section
 
-<pre>
+{% highlight javascript %}
 (function( $ ){
 
   var methods = {
@@ -204,13 +204,13 @@ TODO: update this section
   };
 
 })( jQuery );
-</pre>
+{% endhighlight %}
 
 h3(#prototype). Prototype
 
 I don't know why but when people describe the prototype object they always make it complicated. Granted, it is there to add some layer of object orientation to Javascript, but it is not like Java's classes. It is simpiler. 
 
-<pre>
+{% highlight javascript %}
 	function Cart(options) {
 		// add any data to the cart here
 		this.name = options.name;
@@ -234,7 +234,7 @@ I don't know why but when people describe the prototype object they always make 
 	var shoppingCart = new Cart({ name: 'shopping cart' });
 
 	shoppingCart.addToCart(new Product({ title: "King Wizard", artist: "Kid Cudi", price : 15 }));
-</pre>
+{% endhighlight %}
 
 As you can see, we are simply adding onto the prototype object attached to the function Cart. Those additions are passed onto any new Cart as methods. That's it. 
 

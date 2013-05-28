@@ -50,63 +50,53 @@ The code at the bottom works, but I need to make the rest of the page reflect th
 <p>Models are the link to the server. Ideally, anything coming in or out of the page, once it has loaded, should go through a model. This will keep you from re-writing $.ajax objects, and should allow you to reuse your models on other pages.</p>
 <p>Even more than that, models should hold onto any data you have, and should be unique to one product or object. Try to avoid using arrays in a model. Any kind of array should be a collection. But I digress.</p>
 <p>We are going to recreate the &#8216;total&#8217; request from the create page in backbone. Backbone models expect to use a rails like backend, the routes should conform to those standards. We can change these defaults but the routing scheme is a good one to know, so that is what we will be using. This example is a bit contrived but it will get us started. Baby steps, baby steps.</p>
-<pre>
-var TotalModel = Backbone.Model.extend({
-    id : 'total',
-    url : '/products/total'
-});
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">TotalModel</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">id</span> <span class="o">:</span> <span class="s1">&#39;total&#39;</span><span class="p">,</span>
+    <span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;/products/total&#39;</span>
+<span class="p">});</span>
 
 
-var totalModel = new TotalModel();
+<span class="kd">var</span> <span class="nx">totalModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TotalModel</span><span class="p">();</span>
 
-totalModel.on('change:total', function(model, total) {
-    $("#total").text(total);
-});
+<span class="nx">totalModel</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;change:total&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+<span class="p">});</span>
 
-totalModel.fetch({
-    success : function (a, b, c) {
-        totalModel.set('total',b);
-    }
-});
-</pre>
-<p>There is a bunch going on here, so let me break it down.</p>
-<pre>
-var TotalModel = Backbone.Model.extend({
-    id : 'total',
-    url : '/products/total'
+<span class="nx">totalModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">({</span>
+    <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">totalModel</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;total&#39;</span><span class="p">,</span><span class="nx">b</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div><p>There is a bunch going on here, so let me break it down.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">TotalModel</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Model</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">id</span> <span class="o">:</span> <span class="s1">&#39;total&#39;</span><span class="p">,</span>
+    <span class="nx">url</span> <span class="o">:</span> <span class="s1">&#39;/products/total&#39;</span>
 
-});
-</pre>
-<p>We first create the prototype for the model. This would usually hold any functions we will need later on, but here we just have a couple settings. There are a lot of functions that we might want to attach to the model, but its a good idea to only stick to these: conversions, validations, computed properties, access control (pulled directly from the backbone website). Anything else should probably be attached to a collection or a view.</p>
-<pre>
-var totalModel = new TotalModel();
-</pre>
-<p>We then create an instance of the model. In theory, we might want multiple instances of a model, one for each product for example. In this case, we only want one thing, the total number of products.</p>
-<pre>
-totalModel.on('change:total', function(model, total) {
-    $("#total").text(total);
-});
+<span class="p">});</span>
+</code></pre></div><p>We first create the prototype for the model. This would usually hold any functions we will need later on, but here we just have a couple settings. There are a lot of functions that we might want to attach to the model, but its a good idea to only stick to these: conversions, validations, computed properties, access control (pulled directly from the backbone website). Anything else should probably be attached to a collection or a view.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">totalModel</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">TotalModel</span><span class="p">();</span>
+</code></pre></div><p>We then create an instance of the model. In theory, we might want multiple instances of a model, one for each product for example. In this case, we only want one thing, the total number of products.</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">totalModel</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;change:total&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">model</span><span class="p">,</span> <span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+<span class="p">});</span>
 
-totalModel.fetch();
-</pre>
-<p>Finally we setup a listener and tell the model to fetch the total from the server. Both of these will move somewhere else, and the code itself will change.</p>
+<span class="nx">totalModel</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+</code></pre></div><p>Finally we setup a listener and tell the model to fetch the total from the server. Both of these will move somewhere else, and the code itself will change.</p>
 <h2 id="collections">Backbone Collections</h2>
 <p><span class="caps">TODO</span>: someone who uses collections should re-write this. I almost never use collections.</p>
 <p>Backbone collections at a very basic level are arrays with some added features.</p>
 <p>Lets jump right into it and then we can break down whats going on.</p>
-<pre>
-var ProductCollection = new Backbone.Collection.extend({
-    model : productModel,
-    comparator : function(product) {
-        return product.title;
-    }
-});
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">ProductCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Collection</span><span class="p">.</span><span class="nx">extend</span><span class="p">({</span>
+    <span class="nx">model</span> <span class="o">:</span> <span class="nx">productModel</span><span class="p">,</span>
+    <span class="nx">comparator</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">product</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">product</span><span class="p">.</span><span class="nx">title</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">});</span>
 
-var productCollection = new ProductCollection();
+<span class="kd">var</span> <span class="nx">productCollection</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ProductCollection</span><span class="p">();</span>
 
-productCollection.fetch();
-</pre>
-<p><span class="caps">TODO</span>: explain whats going on here</p>
+<span class="nx">productCollection</span><span class="p">.</span><span class="nx">fetch</span><span class="p">();</span>
+</code></pre></div><p><span class="caps">TODO</span>: explain whats going on here</p>
     </div> <!-- /container -->
 
     <div id="footer">

@@ -18,13 +18,13 @@ It's a good idea to bookmark "the API reference":https://github.com/square/cross
 
 If you are following along with our steps you have already used crossfilter in d3 graphs. 
 
-<pre>
+{% highlight javascript %}
     var cf = crossfilter(d);
 
     var calorie = cf.dimension(function(d) { return d.calories; });
     var calories = calorie.group();
     var calData = calories.all();
-</pre>
+{% endhighlight %}
 
 We create a collection cf, save a dimension of that collection, and then create a group from that collection. 
 

@@ -26,42 +26,42 @@ I am hoping you are at least a little familiar with command line.
 
 -- Move to the /usr/local directory
 
-<pre>
+{% highlight bash %}
 cd /usr/local
-</pre>
+{% endhighlight %}
 
 -- Download the source
 
-<pre>
+{% highlight bash %}
 git clone https://github.com/joyent/node
-</pre>
+{% endhighlight %}
 
 TODO: git checkout correct stable branch
 
 -- configure make
 
-<pre>
+{% highlight bash %}
 ./configure
-</pre>
+{% endhighlight %}
 
 -- make that shit!
 
-<pre>
+{% highlight bash %}
 make
-</pre>
+{% endhighlight %}
 
 -- ok, now install
 
-<pre>
+{% highlight bash %}
 make install
-</pre>
+{% endhighlight %}
 
 
 See! Totally painless. You should be able to be at any folder in your terminal and type...
 
-<pre>
+{% highlight bash %}
 node -v
-</pre>
+{% endhighlight %}
 
 ...and see some info on the version you installed.  Since version (TODO: find version) you also installed npm, which is node's package manager. We will get into npm in a little bit. 
 
@@ -71,16 +71,16 @@ Express is a light web framework for node.js. I don't know if its the best, but 
 
 You can do a couple different things, depending on how much you are in love with express. It might not be a bad idea to install express globally.
 
-<pre>
+{% highlight bash %}
 npm install -g express
-</pre>
+{% endhighlight %}
 
 This allows you to run express commands from anywhere. They have a lightweight build tool that can come in handy for starting projects. 
 
 If you are following along with the server code I created for this project, you only need to go to the root folder and type...
 
-<pre>
+{% highlight bash %}
 npm install
-</pre>
+{% endhighlight %}
 
 ... and npm will take care of the rest. The package.json file tells npm what packages it uses (and describes the project overall. If you make changes, make sure to update your package.json to reflect them).

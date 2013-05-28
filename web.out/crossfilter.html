@@ -45,14 +45,12 @@
 <p>Crossfilter is a library created by the guys at Square.  If you are still thinking about Backbone Collections, crossfilter is like a collection created to handle thousands of models at once. There is a lot of magic going on behind the scenes, and it is a little more strict about how you need to use it, but it allows for javascript to handle data that it would not usually be able to handle.</p>
 <p>It&#8217;s a good idea to bookmark <a href="https://github.com/square/crossfilter/wiki/API-Reference">the <span class="caps">API</span> reference</a> page on github so you can quickly refer to it.</p>
 <p>If you are following along with our steps you have already used crossfilter in d3 graphs.</p>
-<pre>
-    var cf = crossfilter(d);
+<div class="highlight"><pre><code class="javascript">    <span class="kd">var</span> <span class="nx">cf</span> <span class="o">=</span> <span class="nx">crossfilter</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
 
-    var calorie = cf.dimension(function(d) { return d.calories; });
-    var calories = calorie.group();
-    var calData = calories.all();
-</pre>
-<p>We create a collection cf, save a dimension of that collection, and then create a group from that collection.</p>
+    <span class="kd">var</span> <span class="nx">calorie</span> <span class="o">=</span> <span class="nx">cf</span><span class="p">.</span><span class="nx">dimension</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span> <span class="p">});</span>
+    <span class="kd">var</span> <span class="nx">calories</span> <span class="o">=</span> <span class="nx">calorie</span><span class="p">.</span><span class="nx">group</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">calData</span> <span class="o">=</span> <span class="nx">calories</span><span class="p">.</span><span class="nx">all</span><span class="p">();</span>
+</code></pre></div><p>We create a collection cf, save a dimension of that collection, and then create a group from that collection.</p>
 <p>Crossfilter heavily uses key functions or accessor functions. That is what we are passing to .dimension(). It tells crossfilter how to organize all of our data. Crossfilter will take that value from each object in the data and sort it, keep track of the values, and setup functions to easily compare the different values. This can be slow and memory intensive at the beginning, during setup, but it save alot of time when we want to regroup or sort a dimension. We just have to make sure we reuse as much as we can.</p>
 <p><span class="caps">TODO</span>: find a better way to either add a lot of data, or find another data source with more data. There is just not much use for crossfilter with &lt; 20 data points.</p>
 <h2 id="map">Map / Reduce</h2>

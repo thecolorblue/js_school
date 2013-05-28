@@ -13,7 +13,7 @@ On a person note, I use views way to much. I am a UI person, so a lot of what I 
 
 Here is your basic view:
 
-<pre>
+{% highlight javascript %}
 var TotalView = Backbone.View.extend({
     initialize : function() {
         //   model.on( event,         callback,    context);
@@ -30,13 +30,13 @@ var totalView = new TotalView({
     el : '#total',
     model : totalModel
 });
-</pre>
+{% endhighlight %}
 
 Here we have the view to go with our total model. That bottom couple lines I was saying was going to change? We don't need that anymore. although, having the view call model.fetch() is not ideal. 
 
 And the view for products?
 
-<pre>
+{% highlight javascript %}
 var ProductView = Backbone.View.extend({
     tagName : "li",
     className : "product",
@@ -52,13 +52,13 @@ var ProductView = Backbone.View.extend({
 });
 
 var productView = new ProductView();
-</pre>
+{% endhighlight %}
 
 That is pretty much all you need for this page. We are setting up the template and creating a render function. Keep in mind, you will probably want to replace the template with a template library like hogan.js or dust.js. 
 
 We still have to put everything together.
 
-<pre>
+{% highlight javascript %}
 var AllProducts = Backbone.Model.extend({
     url : '/products'
 });
@@ -102,25 +102,25 @@ productsModel.fetch({
         productCollection.add(products);
     }
 });
-</pre>
+{% endhighlight %}
 
 Whoa, thats a lot of code just to get some JSON and render it into html. To do the same thing with just jQuery would only take a couple lines. Let me point out two powerful features you will not get with just jQuery.
 
 1. Object Oriented
 Lets look at the list view. 
 
-<pre>
+{% highlight javascript %}
 var ListView = Backbone.View.extend({
     el : "#productsList",
     append : function(html) {
         this.$el.append(html);
     }
 });
-</pre>
+{% endhighlight %}
 
 If I want to create another list view with another element all I have to do is seperate the functions from the el.
 
-<pre>
+{% highlight javascript %}
 var ListView = Backbone.View.extend({
     append : function(html) {
         this.$el.append(html);
@@ -134,14 +134,14 @@ var ProductView = ListView.extend({
 var TagView = ListView.extend({
     el : "#tagsList"
 });
-</pre>
+{% endhighlight %}
 
 Now the two list views share the same append function. This means if we want to change how all the list views work, we only need to change it once, and if the productView breaks, we know it is not a problem with the ListView because the TagView would also have broken. 
 
 2. Flexibility
 Lets pretend we want to add data from a different source. All we would have to do is create a new model, and add the new data to the collection.
 
-<pre>
+{% highlight javascript %}
 var AllRecipes = Backbone.Model.extend({
     url : 'http://recipesapp.com/usersrecipes'
 });
@@ -153,7 +153,7 @@ allUsersRecipes.fetch({
         productCollection.add(products);
     }
 });
-</pre>
+{% endhighlight %}
 
 As long as these new recipes have a title and tags, they will be rendered fine. You could even convert them into something the view could use in the success handler. 
 
