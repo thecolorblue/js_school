@@ -1,0 +1,196 @@
+<p>This lesson covers:</p>
+<ul>
+	<li><a href="#form">Form</a></li>
+	<li><a href="#intercept">Intercept <span class="caps">POST</span></a></li>
+	<li><a href="#update">Update Total</a></li>
+	<li><a href="#structure">Javascript Structure</a></li>
+</ul>
+<h2 id="form">The Form</h2>
+<p>The form is nothing to complicated, mainly so you can go in and edit it as you want. If you know your html pretty well, you can add whatever you want to it, and the server will save it automatically.</p>
+<p>I have fallen in love with <a href="https://github.com/twitter/bower" title="Twitter&#39;s Bower">bower</a> which allows you to quickly add all the libraries you need. <a href="https://github.com/component/component">Components</a> are nice, but they are designed around a phylosophy that frowns apon large libraries. A good thing to look into, but not currently as popular. We will touch on components later, but for now lets get started with backbone.</p>
+<p>Anyways, get to your folder in your terminal and install jquery, underscore, and backbone with this:</p>
+<div class="highlight"><pre><code class="javascript">    <span class="nx">$</span> <span class="nx">npm</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">g</span> <span class="nx">bower</span>
+    <span class="nx">$</span> <span class="nx">bower</span> <span class="nx">install</span> <span class="nx">backbone</span>
+    <span class="nx">$</span> <span class="nx">bower</span> <span class="nx">install</span> <span class="nx">jquery</span>
+</code></pre></div><p>Just as a little side note, there is a little magic happening behind the scenes. There is a .bowerrc file that tells bower where to get the files and where to put them.</p>
+<h2 id="intercept">Stop That <span class="caps">POST</span></h2>
+<p>Stoping a http form from going forward is just like preventing the default from any other element event.</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div><p>Another option is to put &#8220;return false;&#8221; at the bottom of the callback function, but I find it a little easier to read by putting &#8220;e.preventDefault()&#8221; right at the top.</p>
+<p>Now we need to make our own request, but this time with ajax. I am going to use $.ajax(), but $.post(), will also work. $.ajax is much more flexible, and it&#8217;s good to learn all the extra settings that are used.</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+    <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+    <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+    <span class="nx">data</span> <span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">serialize</span><span class="p">(),</span>
+    <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// all done</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div><h2 id="update">Update Total</h2>
+<p>Now we need to clear the form&#8230;</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+    <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div><p>&#8230; and update the total counter&#8230;</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+    <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+    <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span><span class="p">,</span>
+    <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">});</span>
+</code></pre></div><p>All together, the javascript for this page looks like this.</p>
+<div class="highlight"><pre><code class="javascript"><span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+        <span class="nx">data</span> <span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">serialize</span><span class="p">(),</span>
+        <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;response:&#39;</span><span class="p">,</span><span class="nx">res</span><span class="p">);</span>
+            <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">).</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+            <span class="p">});</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+                <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+                <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span><span class="p">,</span>
+                <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span> 
+<span class="p">});</span>
+</code></pre></div><h2 id="structure">Javascript Structure</h2>
+<p>But this is ugly. Its hard to reuse any of this code, the flow is not easy to read, and it does not efficiently use jquery.</p>
+<p>First, lets cache some of our jquery <span class="caps">DOM</span> lookups.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">$form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">);</span>
+
+<span class="nx">$form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+        <span class="nx">data</span> <span class="o">:</span> <span class="nx">$form</span><span class="p">.</span><span class="nx">serialize</span><span class="p">(),</span>
+        <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+            <span class="nx">$form</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+                <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+            <span class="p">});</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+                <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+                <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span><span class="p">,</span>
+                <span class="nx">success</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+                <span class="p">}</span>
+            <span class="p">});</span>
+        <span class="p">}</span>
+    <span class="p">});</span> 
+<span class="p">});</span>
+</code></pre></div><p>We now only search through the <span class="caps">DOM</span> once, for the form. We are using an id, which is pretty quick, but if we had to use a class, or a more complicated search, it would save time, which is noticable for larger js applications. I did not cache $(&#8220;#total&#8221;) because we only use it once, but if we needed to access it again, it would be good to cache that also.</p>
+<p>Now lets break up the callbacks. We can do this a couple ways.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">$form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">);</span>
+
+<span class="nx">$form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">GETCallback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">POSTCallback</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;post callback&#39;</span><span class="p">);</span>
+        <span class="nx">$form</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+            <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+        <span class="p">});</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="nx">GET</span><span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="kd">var</span> <span class="nx">GET</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span><span class="p">,</span>
+        <span class="nx">success</span> <span class="o">:</span> <span class="nx">GETCallback</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">POST</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+        <span class="nx">data</span> <span class="o">:</span> <span class="nx">$form</span><span class="p">.</span><span class="nx">serialize</span><span class="p">(),</span>
+        <span class="nx">success</span> <span class="o">:</span> <span class="nx">POSTCallback</span>
+    <span class="p">};</span>
+
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="nx">POST</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div><p>This breaks up the pyramid look code often gets when using asynchronous calls. It&#8217;s still a little hard to follow.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">$form</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">);</span>
+
+<span class="nx">$form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">totalRequest</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">updateTotal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+    <span class="p">};</span>
+
+    <span class="kd">var</span> <span class="nx">setRequest</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+            <span class="nx">data</span> <span class="o">:</span> <span class="nx">$form</span><span class="p">.</span><span class="nx">serialize</span><span class="p">()</span>
+        <span class="p">};</span>
+    <span class="p">};</span>
+    <span class="kd">var</span> <span class="nx">clearForm</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">form</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$form</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+            <span class="k">if</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">reset</span><span class="p">();</span>
+        <span class="p">});</span>
+    <span class="p">};</span>
+
+    <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="nx">setRequest</span><span class="p">())</span>
+    <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">clearForm</span><span class="p">)</span>
+    <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="nx">totalRequest</span><span class="p">)</span>
+        <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">updateTotal</span><span class="p">);</span>
+    <span class="p">});</span>
+<span class="p">});</span>
+</code></pre></div><p>Now we are getting better. We have setup all of our data that we need, and seperated that from the logic. Lets see if we can make it a little more object oriented.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">createPage</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="nx">createPage</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="nx">$form</span> <span class="o">:</span> <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#form&quot;</span><span class="p">),</span>
+    <span class="nx">totalRequest</span> <span class="o">:</span> <span class="p">{</span>
+        <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;GET&quot;</span><span class="p">,</span>
+        <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/total&quot;</span>
+    <span class="p">},</span>
+    <span class="nx">setRequest</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="nx">type</span> <span class="o">:</span> <span class="s2">&quot;POST&quot;</span><span class="p">,</span>
+            <span class="nx">url</span>  <span class="o">:</span> <span class="s2">&quot;/products/create&quot;</span><span class="p">,</span>
+            <span class="nx">data</span> <span class="o">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">$form</span><span class="p">.</span><span class="nx">serialize</span><span class="p">()</span>
+        <span class="p">};</span>
+    <span class="p">},</span>
+    <span class="nx">updateTotal</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">total</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">$</span><span class="p">(</span><span class="s2">&quot;#total&quot;</span><span class="p">).</span><span class="nx">text</span><span class="p">(</span><span class="nx">total</span><span class="p">);</span>
+    <span class="p">},</span>
+    <span class="nx">clearForm</span>   <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">$form</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="mi">0</span><span class="p">).</span><span class="nx">reset</span><span class="p">();</span>
+    <span class="p">},</span>
+    <span class="nx">handleSubmit</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">e</span><span class="p">.</span><span class="nx">preventDefault</span><span class="p">();</span>
+        <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">setRequest</span><span class="p">())</span>
+        <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">clearForm</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">createPage</span><span class="p">))</span>
+        <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+            <span class="nx">$</span><span class="p">.</span><span class="nx">ajax</span><span class="p">(</span><span class="nx">createPage</span><span class="p">.</span><span class="nx">totalRequest</span><span class="p">)</span>
+            <span class="p">.</span><span class="nx">success</span><span class="p">(</span><span class="nx">createPage</span><span class="p">.</span><span class="nx">updateTotal</span><span class="p">);</span>
+        <span class="p">});</span>
+    <span class="p">},</span>
+    <span class="nx">initialize</span> <span class="o">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">$form</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="s1">&#39;submit&#39;</span><span class="p">,</span> <span class="k">this</span><span class="p">.</span><span class="nx">handleSubmit</span><span class="p">.</span><span class="nx">bind</span><span class="p">(</span><span class="nx">createPage</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="nx">createPage</span><span class="p">.</span><span class="nx">initialize</span><span class="p">();</span>
+</code></pre></div><p>Wow, that was a big change. We now have everything wrapped into one object. This allows us to do two things:</p>
+<p>1. the object requires a specific structure that cleans up the code<br />
+2. we are now able to use &#8220;this&#8221; inside the object to refer to createPage</p>
+<p>There is a downside and it is mostly related to the way jQuery sets up success callbacks. By default jQuery sets the context of callbacks to the jQXHR, which is the object with information on the request. There are two ways to get around this, use .bind (like I did in the example) or set the context in the options you pass $.ajax. I have had better luck with .bind.</p>
+<p>If you are not used to this much structure it can feel weird, and you are probably asking &#8220;why are we doing this?&#8221;.  I will explain more later.</p>

@@ -1,0 +1,163 @@
+<p>This lesson covers:</p>
+<ul>
+	<li><a href="#graphs">Graphs</a></li>
+	<li><a href="#updating">Updating</a></li>
+	<li><a href="#transitions">Transitions</a></li>
+	<li><a href="#soapbox">Soapbox</a></li>
+</ul>
+<h2 id="graphs">D3 Graphs</h2>
+<p>D3.js is a graphing library that makes building awesome graphs and visualizations much easier. It also has a different way of thinking about updating the <span class="caps">DOM</span> that is more in tune with animations. You will find that updating the products page to add animation is difficult. JQuery has a nice animation function, and there are always css3 transistions, but it will get crazy pretty quick. You will find that d3 has a harder learning curve to get started, but adding on additions or more complex data sets will be easier.</p>
+<p>Here is a graph from the admin page.</p>
+<div class="highlight"><pre><code class="javascript">     <span class="c1">// calorie graph</span>
+     <span class="kd">var</span> <span class="nx">titleHeight</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+
+    <span class="nx">chart</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#calorieGraph&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;chart&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="nx">calData</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span> <span class="p">);</span>
+
+    <span class="nx">x</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">extent</span><span class="p">(</span><span class="nx">calData</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span> <span class="p">}))</span>
+     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">ordinal</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+     <span class="p">.</span><span class="nx">rangeBands</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+
+     <span class="kd">var</span> <span class="nx">groups</span> <span class="o">=</span> <span class="nx">chart</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">calData</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">enter</span><span class="p">().</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">);</span>
+     
+     <span class="c1">// create bars</span>
+     <span class="nx">groups</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;rect&#39;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">y</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span> <span class="o">+</span> <span class="mi">25</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+</code></pre></div><p>It is a very basic bar graph but it introduces a couple things that are central to d3. I have linked the graph to &#8216;calories&#8217; which is one of the inputs on my create page. If you have used something different, and I highly advise that you try something different here, remember to change the names to make sense.</p>
+<p>First we create the element in the <span class="caps">DOM</span>.</p>
+<div class="highlight"><pre><code class="javascript">    <span class="nx">chart</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#calorieGraph&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;chart&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="nx">calData</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span> <span class="p">);</span>
+</code></pre></div><p>we are setting the width and the height, and a class here.</p>
+<div class="highlight"><pre><code class="javascript">    <span class="nx">x</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">extent</span><span class="p">(</span><span class="nx">calData</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span> <span class="p">}))</span>
+     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">ordinal</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+     <span class="p">.</span><span class="nx">rangeBands</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+</code></pre></div><p>These are helper functions that d3 lets us create. They normalize widths and heights of the bar graph. But we will get into that later.</p>
+<div class="highlight"><pre><code class="javascript">     <span class="kd">var</span> <span class="nx">groups</span> <span class="o">=</span> <span class="nx">chart</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">calData</span><span class="p">).</span><span class="nx">enter</span><span class="p">();</span>
+</code></pre></div><p>This is actually where the magic happens. What we are doing is taking what we defined in chart, telling d3 to add a &#8216;g&#8217; element for each object in calData, and selecting the elements we are adding (elements that are &#8216;entering&#8217; the grapth). When we add data d3 seperates the data into three piles: enter, update, and exit. The enter method works like an each loop, everything afterwards is applied to each element in that group. This allows you to animate each group seperately.</p>
+<div class="highlight"><pre><code class="javascript">     <span class="c1">// create bars</span>
+     <span class="nx">groups</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;rect&#39;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">y</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span> <span class="o">+</span> <span class="mi">25</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+     <span class="c1">// create keys</span>
+     <span class="nx">groups</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;1em&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">titleHeight</span> <span class="o">+</span> <span class="mi">15</span><span class="p">);</span> <span class="p">})</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span> <span class="c1">// text-align: right</span>
+       <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span> <span class="p">});</span>
+
+      <span class="nx">chart</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;1em&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;title&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span> <span class="c1">// text-align: right</span>
+       <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Calories&quot;</span><span class="p">);</span>
+</code></pre></div><p>And finally we get down to business. We are appending elements (either &#8217;rect&#8217;s or &#8217;text&#8217;s) and then setting attributes on each of them.</p>
+<p>There are three things that are different:</p>
+<p>1. We are using svg instead of divs.<br />
+2. D3 does not have a model. Data is attached to the <span class="caps">DOM</span> element<br />
+3. Updating is a three step process. Find elements / find data, combine and process, flush out un-needed elements.</p>
+<h2 id="updating">Updating</h2>
+<p><span class="caps">TODO</span></p>
+<h2 id="transitions">Transitions</h2>
+<p><span class="caps">TODO</span></p>
+<h2 id="totalProducts">Total Products Graph</h2>
+<div class="highlight"><pre><code class="javascript">  <span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s1">&#39;/products&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{});</span>
+</code></pre></div><p>With d3, it is easy to pull data from the server, although you do not have many options. They work similar to $.json(), except there is also, .text(), .html(), .xml(), .tsv()&#8230; You can also use the native <span class="caps">XHR</span> object with d3.xhr.</p>
+<p>Inside the callback you want to put all of your graph code. The next step is setting up the data for the graph. We will be using crossfilter this time, and go deeper into it later.</p>
+<div class="highlight"><pre><code class="javascript">    <span class="nx">calorie</span> <span class="o">=</span> <span class="nx">cf</span><span class="p">.</span><span class="nx">dimension</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="o">+</span><span class="nx">d</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span> <span class="p">});</span>
+    <span class="nx">calories</span> <span class="o">=</span> <span class="nx">calorie</span><span class="p">.</span><span class="nx">group</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">calData</span> <span class="o">=</span> <span class="nx">calories</span><span class="p">.</span><span class="nx">all</span><span class="p">();</span>
+</code></pre></div><p>Basically, we are creating key value pairs for the calorie attributes of each data element. calData ends up looking like this:</p>
+<div class="highlight"><pre><code class="javascript"><span class="p">[</span>
+	<span class="p">{</span>
+		<span class="nx">key</span> <span class="o">:</span> <span class="s2">&quot;500&quot;</span><span class="p">,</span>
+		<span class="nx">value</span> <span class="o">:</span> <span class="s2">&quot;2&quot;</span>
+	<span class="p">},</span>
+	<span class="p">{</span>
+		<span class="nx">key</span> <span class="o">:</span> <span class="s2">&quot;600&quot;</span><span class="p">,</span>
+		<span class="nx">value</span> <span class="o">:</span> <span class="s2">&quot;7&quot;</span>
+	<span class="p">}</span>
+<span class="p">]</span>
+</code></pre></div><p>Key is equal to all the d.calories, and value is how many times they appear. You will want to play around with this, of course, for other graphs, but the important thing is that one value in each object can be used as a key, or a unique identifier.</p>
+<p>The whole thing together looks like this:</p>
+<div class="highlight"><pre><code class="javascript">  <span class="nx">d3</span><span class="p">.</span><span class="nx">json</span><span class="p">(</span><span class="s1">&#39;/products&#39;</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> 
+    <span class="nx">cf</span> <span class="o">=</span> <span class="nx">crossfilter</span><span class="p">(</span><span class="nx">d</span><span class="p">);</span>
+
+    <span class="nx">calorie</span> <span class="o">=</span> <span class="nx">cf</span><span class="p">.</span><span class="nx">dimension</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span> <span class="p">});</span>
+    <span class="nx">calories</span> <span class="o">=</span> <span class="nx">calorie</span><span class="p">.</span><span class="nx">group</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">calData</span> <span class="o">=</span> <span class="nx">calories</span><span class="p">.</span><span class="nx">all</span><span class="p">();</span>
+
+    <span class="nx">category</span> <span class="o">=</span> <span class="nx">cf</span><span class="p">.</span><span class="nx">dimension</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">category</span><span class="p">;</span> <span class="p">});</span>
+    <span class="nx">categories</span> <span class="o">=</span> <span class="nx">category</span><span class="p">.</span><span class="nx">group</span><span class="p">();</span>
+    <span class="kd">var</span> <span class="nx">catData</span> <span class="o">=</span> <span class="nx">categories</span><span class="p">.</span><span class="nx">all</span><span class="p">();</span>
+
+     <span class="c1">// calorie graph</span>
+     <span class="kd">var</span> <span class="nx">titleHeight</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+
+    <span class="nx">chart</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">select</span><span class="p">(</span><span class="s2">&quot;#calorieGraph&quot;</span><span class="p">).</span><span class="nx">append</span><span class="p">(</span><span class="s2">&quot;svg&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;class&quot;</span><span class="p">,</span> <span class="s2">&quot;chart&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;width&quot;</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;height&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">20</span> <span class="o">*</span> <span class="nx">calData</span><span class="p">.</span><span class="nx">length</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span> <span class="p">);</span>
+
+    <span class="nx">x</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">linear</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">(</span><span class="nx">d3</span><span class="p">.</span><span class="nx">extent</span><span class="p">(</span><span class="nx">calData</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span> <span class="p">}))</span>
+     <span class="p">.</span><span class="nx">range</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+    <span class="kd">var</span> <span class="nx">y</span> <span class="o">=</span> <span class="nx">d3</span><span class="p">.</span><span class="nx">scale</span><span class="p">.</span><span class="nx">ordinal</span><span class="p">()</span>
+     <span class="p">.</span><span class="nx">domain</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">10</span><span class="p">])</span>
+     <span class="p">.</span><span class="nx">rangeBands</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">200</span><span class="p">]);</span>
+
+     <span class="kd">var</span> <span class="nx">groups</span> <span class="o">=</span> <span class="nx">chart</span><span class="p">.</span><span class="nx">selectAll</span><span class="p">(</span><span class="s2">&quot;g&quot;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="nx">calData</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">enter</span><span class="p">();</span>
+     
+     <span class="c1">// create bars</span>
+     <span class="nx">groups</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;rect&#39;</span><span class="p">)</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="nx">titleHeight</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;width&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">y</span><span class="p">(</span><span class="nx">d</span><span class="p">.</span><span class="nx">value</span><span class="p">))</span> <span class="o">+</span> <span class="mi">25</span><span class="p">;</span> <span class="p">})</span>
+     <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;height&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">);</span>
+
+     <span class="c1">// create keys</span>
+     <span class="nx">groups</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;1em&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="nx">i</span> <span class="o">*</span> <span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nx">titleHeight</span> <span class="o">+</span> <span class="mi">15</span><span class="p">);</span> <span class="p">})</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">)</span> <span class="c1">// text-align: right</span>
+       <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="nx">d</span><span class="p">.</span><span class="nx">key</span><span class="p">;</span> <span class="p">});</span>
+
+      <span class="nx">chart</span><span class="p">.</span><span class="nx">append</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;dy&quot;</span><span class="p">,</span> <span class="s2">&quot;1em&quot;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;class&#39;</span><span class="p">,</span><span class="s1">&#39;title&#39;</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dy&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;dx&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+       <span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s2">&quot;text-anchor&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">)</span> <span class="c1">// text-align: right</span>
+       <span class="p">.</span><span class="nx">text</span><span class="p">(</span><span class="s2">&quot;Calories&quot;</span><span class="p">);</span>
+
+  <span class="p">});</span>
+</code></pre></div><p>This is where you (and I) say: &#8220;But wait! We are updating the <span class="caps">DOM</span> like a crazy person. There must be a better way!&#8221;<br />
+I will agree with you here. It looks like d3 is updatind each individual element seperately. There must be some magic going on behind the scenes or else this would get very slow. It must be doing something to take care of this problem because the examples on their website, are awe inspiring, and none of them feel slow. <br />
+&#8220;But they are attaching data to the <span class="caps">DOM</span>. That can&#8217;t be good.&#8221;<br />
+It seems inefficient to attach data to the <span class="caps">DOM</span>, since reading from the <span class="caps">DOM</span> is one of the most expensive actions you can do. Again, the examples speak for themselves. <span class="caps">TODO</span>: research this topic more.</p>
+<h3 id="soapbox">#Soapbox</h3>
+<p>I think this is a good time to bring something up. Although it is great to practice the craft of creating javascript with graphs like these, it is important to remember the art. What do your users want to see? That is the graph you should build, not the one that looks the best, or is the easiest.</p>
+<p>There is no such thing as a great website about nothing.</p>

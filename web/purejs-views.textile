@@ -71,6 +71,23 @@ h3. Input Types
 
 h3. Input Validation
 
-h2(#formdata). FormData
+h3(#formdata). FormData
 
-the "FormData" object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and AJAX without having to use iframes or flash.
+the "FormData" object is relatively new, part of the changes included in HTML5, but it fixes one of fundemental bugs with the XMLHTTPRequest (these changes are often called XMLHTTPRequest2). With the FormData object you can now upload files in a clean way in javascript and AJAX without having to use iframes or flash. Tied in with File and Blob objects, you have a pretty powerful tool. 
+
+{% highlight javascript %}
+
+var form = new FormData();
+
+form.append("title", "French Toast");
+form.append("description", "authentic french toast.");
+
+
+var request = new XMLHttpRequest();
+request.open("POST", "http://yourwebsite.com/post");
+request.send(form);
+
+{% endhighlight %}
+
+The feature that I like the most is that you basically create your own form in javascript, making it easier to control exactly what each field has for data. I should note here that FormData acts like a black box. Once you append a value to a key you cannot get it back. 
+

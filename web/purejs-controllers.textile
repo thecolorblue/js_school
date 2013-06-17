@@ -240,6 +240,19 @@ As you can see, we are simply adding onto the prototype object attached to the f
 
 Conceptually, its almost the same as your C++ or Python classes. There is a little magic that is needed to get inheritance working the way a server side developer would expect, but it is there. 
 
+h4. this
+
+The keyword 'this' in javascript is a little confusing, mostly because of how javascript allows you to write in different styles. Think of it in this context though:
+
+- methods have the scope of the object they are attached too
+- functions have their own scope, and are not attached to anything else
+
+You will not always hear about functions attached to a object as methods, because there is no reason to. They act the same, except for this one instance. Let me give an example. Feel free to copy this into your favorite js console.
+
+{% highlight javascript %}
+
+{% endhighlight %}
+
 h3(#when). When to use Prototype
 
 Honestly, if you are not writing a web application with a lot of moving parts, you should avoid using the prototype object. If you are only creating one instance of the cart, in the example above, and one or two products, you will not see the performance increase. In fact, I have seen some libraries that a little like prototypes, there is a function and an object of functions attached to it, but they just don't use the 'new' keyword. 

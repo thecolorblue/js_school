@@ -1,0 +1,106 @@
+<p>This lesson covers:</p>
+<ul>
+	<li><a href="#dependencies">No Dependencies</a></li>
+	<li><a href="#xhr">XMLHttpRequest</a></li>
+	<li><a href="#forms">Forms</a></li>
+	<li><a href="#formdata">Form Data</a></li>
+</ul>
+<h2 id="dependencies">When To Have No Dependencies</h2>
+<p>Sometimes you are writing a library, or code you are going to be using all over the place. Maybe you want this to be the last time you ever write these functions. You want to know that no matter what, no matter what <span class="caps">API</span> changes are made to a different library, no matter how much your data set will change, this code will always work as expected. If I give it an object with strings, it will always give me an array with numbers.</p>
+<p>As another point, I have found pure javascript, without using other libraries, to be much less expensive, performance wise. It is easy to use jQuery or underscore, or even Backbone, to an extreme. This creates code that runs slow. Every once in a while, you run into a situation that no one else has</p>
+<h2 id="xhr">XMLHTTPRequest</h2>
+<p>The <a href="http://en.wikipedia.org/wiki/XMLHttpRequest">XMLHttpRequest</a> object has an interesting history, in my opinion. Basically, it allows websites to make another request, after the initial request that loads the page. It is javascript, at a very core level. You need to think object oriented.</p>
+<p>Side note: one of the things people did not like about jQuery, early on, was that it simplified XMLHTTPRequest, the <span class="caps">DOM</span> and other things so much it was more of a simple scripting language instead of the watered down object oriented language it was before.</p>
+<p>Lets jump right in. How do we make a request like we did at the very beginning.</p>
+<div class="highlight"><pre><code class="javascript"><span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="s2">&quot;/product/total&quot;</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">responseType</span> <span class="o">=</span> <span class="s2">&quot;arraybuffer&quot;</span><span class="p">;</span> 
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">onload</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">arraybuffer</span> <span class="o">=</span> <span class="nx">xhr</span><span class="p">.</span><span class="nx">response</span><span class="p">;</span> <span class="c1">// not responseText</span>
+  <span class="cm">/* ... */</span>
+<span class="p">}</span>
+<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">();</span>
+</code></pre></div><h2 id="models">Models</h2>
+<p>Now lets talk about models. Forget it, let me should you a model.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">product</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="nx">title</span> <span class="o">:</span> <span class="s1">&#39;sushi&#39;</span><span class="p">,</span>
+		<span class="nx">calories</span> <span class="o">:</span> <span class="mi">500</span><span class="p">,</span>
+		<span class="nx">category</span> <span class="o">:</span> <span class="s1">&#39;japaness&#39;</span><span class="p">,</span>
+		<span class="nx">description</span> <span class="o">:</span> <span class="s1">&#39;california roll&#39;</span>
+	<span class="p">};</span>
+</code></pre></div><p>There are not really strict rules on what a model has to do in javascript. This will mostly work against you because you will have to make your own.</p>
+<p>Generally, your model should make it really easy for your controller to save, edit, delete, or create data. Everything else is up to you.</p>
+<p>So lets make this model do something. First, lets create a prototype.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">Product</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">title</span><span class="p">)</span>       <span class="k">this</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">options</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">calories</span><span class="p">)</span>    <span class="k">this</span><span class="p">.</span><span class="nx">calories</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">category</span><span class="p">)</span>    <span class="k">this</span><span class="p">.</span><span class="nx">category</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">category</span><span class="p">;</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">description</span><span class="p">)</span> <span class="k">this</span><span class="p">.</span><span class="nx">description</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span><span class="p">;</span>
+	<span class="p">};</span>
+	<span class="kd">var</span> <span class="nx">product</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Product</span><span class="p">({</span>
+		<span class="nx">title</span> <span class="o">:</span> <span class="s1">&#39;sushi&#39;</span><span class="p">,</span>
+		<span class="nx">calories</span> <span class="o">:</span> <span class="mi">500</span><span class="p">,</span>
+		<span class="nx">category</span> <span class="o">:</span> <span class="s1">&#39;japaness&#39;</span><span class="p">,</span>
+		<span class="nx">description</span> <span class="o">:</span> <span class="s1">&#39;california roll&#39;</span>
+	<span class="p">});</span>
+</code></pre></div><p>Now we can add some validation.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">Product</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">title</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">title</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">options</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">calories</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">calories</span> <span class="o">===</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">calories</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">category</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">category</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">category</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">category</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">description</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">description</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">};</span>
+</code></pre></div><p>Notice, this just made our init function much bigger and much harder to read. Only do this kind of validating if you have to.</p>
+<p>Lets add some functionality.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">Product</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+		<span class="p">...</span>
+	<span class="p">};</span>
+	<span class="nx">Product</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">readyToEat</span> <span class="o">=</span> <span class="kc">false</span><span class="p">;</span>
+	<span class="nx">Product</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">roll</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">readyToEat</span> <span class="o">=</span> <span class="kc">true</span><span class="p">;</span>
+	<span class="p">}</span>
+</code></pre></div><p>Now we can do something with our food.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">product</span><span class="p">.</span><span class="nx">readyToEat</span><span class="p">);</span> <span class="c1">// returns false</span>
+	<span class="nx">product</span><span class="p">.</span><span class="nx">roll</span><span class="p">();</span>
+	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">product</span><span class="p">.</span><span class="nx">readyToEat</span><span class="p">);</span> <span class="c1">// this will return true</span>
+</code></pre></div><p>I&#8217;m getting bored. Lets make this useful.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">Product</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">title</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">title</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">title</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">options</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">calories</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">calories</span> <span class="o">===</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">calories</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">calories</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">category</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">category</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">category</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">category</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">description</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span> <span class="o">===</span> <span class="s1">&#39;string&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">description</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">if</span><span class="p">(</span><span class="nx">options</span><span class="p">.</span><span class="nx">price</span> <span class="o">&amp;&amp;</span> <span class="k">typeof</span> <span class="nx">options</span><span class="p">.</span><span class="nx">description</span> <span class="o">===</span> <span class="s1">&#39;number&#39;</span><span class="p">)</span> <span class="p">{</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">price</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">price</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">};</span>	
+</code></pre></div><p>Commerce! You can probably think of some things this model can do. Add to a cart. Add to a meal. Add it to a menu.</p>
+<p>Also, we can easily send this with the XMLHTTPRequest object.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">var</span> <span class="nx">serialize</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">obj</span><span class="p">)</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">str</span> <span class="o">=</span> <span class="p">[];</span>
+		<span class="k">for</span><span class="p">(</span><span class="kd">var</span> <span class="nx">p</span> <span class="k">in</span> <span class="nx">obj</span><span class="p">)</span>
+		 <span class="nx">str</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">+</span> <span class="nb">encodeURIComponent</span><span class="p">(</span><span class="nx">obj</span><span class="p">[</span><span class="nx">p</span><span class="p">]));</span>
+		<span class="k">return</span> <span class="nx">str</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="s2">&quot;&amp;&quot;</span><span class="p">);</span>
+	<span class="p">}</span>
+
+	<span class="kd">var</span> <span class="nx">xhr</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">XMLHttpRequest</span><span class="p">();</span>
+	
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">open</span><span class="p">(</span><span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">res</span><span class="p">){</span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">);</span> <span class="p">},</span> <span class="kc">true</span><span class="p">);</span>
+
+	<span class="nx">xhr</span><span class="p">.</span><span class="nx">send</span><span class="p">(</span><span class="nx">serialize</span><span class="p">(</span><span class="nx">product</span><span class="p">));</span>
+</code></pre></div>

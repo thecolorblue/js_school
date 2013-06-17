@@ -1,0 +1,223 @@
+<p>This lesson covers:</p>
+<ul>
+	<li><a href="#Controllers">Controllers</a></li>
+	<li><a href="#libraries">Libraries</a></li>
+	<li><a href="#strucure">Structure</a></li>
+	<li><a href="#events">Events</a></li>
+	<li><a href="#modules">Modules</a></li>
+	<li><a href="#prototype">Prototype</a></li>
+	<li><a href="#when">When To Use Prototype</a></li>
+</ul>
+<h2 id="Controllers">Controllers</h2>
+<p>Think of controllers as the glue between your models and your views. For those who have done some project management, or worked with a team of developers, the flow of controllers should ready like business rules for the application.</p>
+&#8220;When this button is clicked, add that product to that cart&#8221;
+&#8220;When this button is clicked, open this page with that products details&#8221;
+&#8220;When the page is loaded, open this page and show all the products&#8221;
+<p>This same text can be used to write your tests later, and and should correspond to what you want your app to do. There is no such thing as a great app that does nothing.</p>
+<h2 id="libraries">Libraries</h2>
+<h3 id="events">Events</h3>
+<p>Straight from Backbone.</p>
+<div class="highlight"><pre><code class="javascript">	 <span class="kd">var</span> <span class="nx">Events</span> <span class="o">=</span> <span class="nx">Backbone</span><span class="p">.</span><span class="nx">Events</span> <span class="o">=</span> <span class="p">{</span>
+
+    <span class="c1">// Bind one or more space separated events, or an events map,</span>
+    <span class="c1">// to a `callback` function. Passing `&quot;all&quot;` will bind the callback to</span>
+    <span class="c1">// all events fired.</span>
+    <span class="nx">on</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">eventsApi</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;on&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">))</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">_events</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_events</span> <span class="o">=</span> <span class="p">{});</span>
+      <span class="kd">var</span> <span class="nx">list</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]);</span>
+      <span class="nx">list</span><span class="p">.</span><span class="nx">push</span><span class="p">({</span><span class="nx">callback</span><span class="o">:</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="o">:</span> <span class="nx">context</span><span class="p">,</span> <span class="nx">ctx</span><span class="o">:</span> <span class="nx">context</span> <span class="o">||</span> <span class="k">this</span><span class="p">});</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Bind events to only be triggered a single time. After the first time</span>
+    <span class="c1">// the callback is invoked, it will be removed.</span>
+    <span class="nx">once</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="nx">eventsApi</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;once&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">])</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span><span class="p">))</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">self</span> <span class="o">=</span> <span class="k">this</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">once</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">once</span><span class="p">(</span><span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">self</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">once</span><span class="p">);</span>
+        <span class="nx">callback</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+      <span class="p">});</span>
+      <span class="nx">once</span><span class="p">.</span><span class="nx">_callback</span> <span class="o">=</span> <span class="nx">callback</span><span class="p">;</span>
+      <span class="k">this</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">once</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Remove one or many callbacks. If `context` is null, removes all</span>
+    <span class="c1">// callbacks with that function. If `callback` is null, removes all</span>
+    <span class="c1">// callbacks for the event. If `events` is null, removes all bound</span>
+    <span class="c1">// callbacks for all events.</span>
+    <span class="nx">off</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">list</span><span class="p">,</span> <span class="nx">ev</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">names</span><span class="p">,</span> <span class="nx">i</span><span class="p">,</span> <span class="nx">l</span><span class="p">,</span> <span class="nx">j</span><span class="p">,</span> <span class="nx">k</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_events</span> <span class="o">||</span> <span class="o">!</span><span class="nx">eventsApi</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;off&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="p">[</span><span class="nx">callback</span><span class="p">,</span> <span class="nx">context</span><span class="p">]))</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">name</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_events</span> <span class="o">=</span> <span class="p">{};</span>
+        <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="p">}</span>
+
+      <span class="nx">names</span> <span class="o">=</span> <span class="nx">name</span> <span class="o">?</span> <span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">:</span> <span class="nx">_</span><span class="p">.</span><span class="nx">keys</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">);</span>
+      <span class="k">for</span> <span class="p">(</span><span class="nx">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">l</span> <span class="o">=</span> <span class="nx">names</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&lt;</span> <span class="nx">l</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">name</span> <span class="o">=</span> <span class="nx">names</span><span class="p">[</span><span class="nx">i</span><span class="p">];</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nx">list</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">[</span><span class="nx">name</span><span class="p">])</span> <span class="p">{</span>
+          <span class="nx">events</span> <span class="o">=</span> <span class="p">[];</span>
+          <span class="k">if</span> <span class="p">(</span><span class="nx">callback</span> <span class="o">||</span> <span class="nx">context</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="nx">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">k</span> <span class="o">=</span> <span class="nx">list</span><span class="p">.</span><span class="nx">length</span><span class="p">;</span> <span class="nx">j</span> <span class="o">&lt;</span> <span class="nx">k</span><span class="p">;</span> <span class="nx">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+              <span class="nx">ev</span> <span class="o">=</span> <span class="nx">list</span><span class="p">[</span><span class="nx">j</span><span class="p">];</span>
+              <span class="k">if</span> <span class="p">((</span><span class="nx">callback</span> <span class="o">&amp;&amp;</span> <span class="nx">callback</span> <span class="o">!==</span> <span class="p">(</span><span class="nx">ev</span><span class="p">.</span><span class="nx">callback</span><span class="p">.</span><span class="nx">_callback</span> <span class="o">||</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">callback</span><span class="p">))</span> <span class="o">||</span>
+                  <span class="p">(</span><span class="nx">context</span> <span class="o">&amp;&amp;</span> <span class="nx">context</span> <span class="o">!==</span> <span class="nx">ev</span><span class="p">.</span><span class="nx">context</span><span class="p">))</span> <span class="p">{</span>
+                <span class="nx">events</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">ev</span><span class="p">);</span>
+              <span class="p">}</span>
+            <span class="p">}</span>
+          <span class="p">}</span>
+          <span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="nx">events</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Trigger one or many events, firing all bound callbacks. Callbacks are</span>
+    <span class="c1">// passed the same arguments as `trigger` is, apart from the event name</span>
+    <span class="c1">// (unless you&#39;re listening on `&quot;all&quot;`, which will cause your callback to</span>
+    <span class="c1">// receive the true name of the event as the first argument).</span>
+    <span class="nx">trigger</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">name</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">)</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">args</span> <span class="o">=</span> <span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">eventsApi</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="s1">&#39;trigger&#39;</span><span class="p">,</span> <span class="nx">name</span><span class="p">,</span> <span class="nx">args</span><span class="p">))</span> <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+      <span class="kd">var</span> <span class="nx">events</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">[</span><span class="nx">name</span><span class="p">];</span>
+      <span class="kd">var</span> <span class="nx">allEvents</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_events</span><span class="p">.</span><span class="nx">all</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">events</span><span class="p">)</span> <span class="nx">triggerEvents</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">args</span><span class="p">);</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">allEvents</span><span class="p">)</span> <span class="nx">triggerEvents</span><span class="p">(</span><span class="k">this</span><span class="p">,</span> <span class="nx">allEvents</span><span class="p">,</span> <span class="nx">arguments</span><span class="p">);</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="c1">// An inversion-of-control version of `on`. Tell *this* object to listen to</span>
+    <span class="c1">// an event in another object ... keeping track of what it&#39;s listening to.</span>
+    <span class="nx">listenTo</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">listeners</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span> <span class="o">||</span> <span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span> <span class="o">=</span> <span class="p">{});</span>
+      <span class="kd">var</span> <span class="nx">id</span> <span class="o">=</span> <span class="nx">object</span><span class="p">.</span><span class="nx">_listenerId</span> <span class="o">||</span> <span class="p">(</span><span class="nx">object</span><span class="p">.</span><span class="nx">_listenerId</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">uniqueId</span><span class="p">(</span><span class="s1">&#39;l&#39;</span><span class="p">));</span>
+      <span class="nx">listeners</span><span class="p">[</span><span class="nx">id</span><span class="p">]</span> <span class="o">=</span> <span class="nx">object</span><span class="p">;</span>
+      <span class="nx">object</span><span class="p">.</span><span class="nx">on</span><span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span> <span class="o">||</span> <span class="k">this</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">},</span>
+
+    <span class="c1">// Tell this object to stop listening to either specific events ... or</span>
+    <span class="c1">// to every object it&#39;s currently listening to.</span>
+    <span class="nx">stopListening</span><span class="o">:</span> <span class="kd">function</span><span class="p">(</span><span class="nx">object</span><span class="p">,</span> <span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+      <span class="kd">var</span> <span class="nx">listeners</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">listeners</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+      <span class="k">if</span> <span class="p">(</span><span class="nx">object</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">object</span><span class="p">.</span><span class="nx">off</span><span class="p">(</span><span class="nx">events</span><span class="p">,</span> <span class="nx">callback</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">events</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">callback</span><span class="p">)</span> <span class="k">delete</span> <span class="nx">listeners</span><span class="p">[</span><span class="nx">object</span><span class="p">.</span><span class="nx">_listenerId</span><span class="p">];</span>
+      <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kd">var</span> <span class="nx">id</span> <span class="k">in</span> <span class="nx">listeners</span><span class="p">)</span> <span class="p">{</span>
+          <span class="nx">listeners</span><span class="p">[</span><span class="nx">id</span><span class="p">].</span><span class="nx">off</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kc">null</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="k">this</span><span class="p">.</span><span class="nx">_listeners</span> <span class="o">=</span> <span class="p">{};</span>
+      <span class="p">}</span>
+      <span class="k">return</span> <span class="k">this</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">};</span>
+</code></pre></div><h3 id="modules">Modules</h3>
+<p>This example is from the old jquery plugin guide, but it is still relavent. Here is <a href="http://learn.jquery.com/plugins/">jQuery&#8217;s new guide for plugins</a>.</p>
+<p><span class="caps">TODO</span>: update this section</p>
+<div class="highlight"><pre><code class="javascript"><span class="p">(</span><span class="kd">function</span><span class="p">(</span> <span class="nx">$</span> <span class="p">){</span>
+
+  <span class="kd">var</span> <span class="nx">methods</span> <span class="o">=</span> <span class="p">{</span>
+     <span class="nx">init</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">options</span> <span class="p">)</span> <span class="p">{</span>
+
+       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+         
+         <span class="kd">var</span> <span class="nx">$this</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">),</span>
+             <span class="nx">data</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;tooltip&#39;</span><span class="p">),</span>
+             <span class="nx">tooltip</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="s1">&#39;&lt;div /&gt;&#39;</span><span class="p">,</span> <span class="p">{</span>
+               <span class="nx">text</span> <span class="o">:</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">attr</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">)</span>
+             <span class="p">});</span>
+         
+         <span class="c1">// If the plugin hasn&#39;t been initialized yet</span>
+         <span class="k">if</span> <span class="p">(</span> <span class="o">!</span> <span class="nx">data</span> <span class="p">)</span> <span class="p">{</span>
+         
+           <span class="cm">/*</span>
+<span class="cm">             Do more setup stuff here</span>
+<span class="cm">           */</span>
+
+           <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;tooltip&#39;</span><span class="p">,</span> <span class="p">{</span>
+               <span class="nx">target</span> <span class="o">:</span> <span class="nx">$this</span><span class="p">,</span>
+               <span class="nx">tooltip</span> <span class="o">:</span> <span class="nx">tooltip</span>
+           <span class="p">});</span>
+
+         <span class="p">}</span>
+       <span class="p">});</span>
+     <span class="p">},</span>
+     <span class="nx">destroy</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span>
+
+       <span class="k">return</span> <span class="k">this</span><span class="p">.</span><span class="nx">each</span><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+
+         <span class="kd">var</span> <span class="nx">$this</span> <span class="o">=</span> <span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">),</span>
+             <span class="nx">data</span> <span class="o">=</span> <span class="nx">$this</span><span class="p">.</span><span class="nx">data</span><span class="p">(</span><span class="s1">&#39;tooltip&#39;</span><span class="p">);</span>
+
+         <span class="c1">// Namespacing FTW</span>
+         <span class="nx">$</span><span class="p">(</span><span class="nb">window</span><span class="p">).</span><span class="nx">unbind</span><span class="p">(</span><span class="s1">&#39;.tooltip&#39;</span><span class="p">);</span>
+         <span class="nx">data</span><span class="p">.</span><span class="nx">tooltip</span><span class="p">.</span><span class="nx">remove</span><span class="p">();</span>
+         <span class="nx">$this</span><span class="p">.</span><span class="nx">removeData</span><span class="p">(</span><span class="s1">&#39;tooltip&#39;</span><span class="p">);</span>
+
+       <span class="p">})</span>
+
+     <span class="p">},</span>
+     <span class="nx">reposition</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">// ... },</span>
+     <span class="nx">show</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">// ... },</span>
+     <span class="nx">hide</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">// ... },</span>
+     <span class="nx">update</span> <span class="o">:</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">content</span> <span class="p">)</span> <span class="p">{</span> <span class="c1">// ...}</span>
+  <span class="p">};</span>
+
+  <span class="nx">$</span><span class="p">.</span><span class="nx">fn</span><span class="p">.</span><span class="nx">tooltip</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span> <span class="nx">method</span> <span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">if</span> <span class="p">(</span> <span class="nx">methods</span><span class="p">[</span><span class="nx">method</span><span class="p">]</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">methods</span><span class="p">[</span><span class="nx">method</span><span class="p">].</span><span class="nx">apply</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nb">Array</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">slice</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span> <span class="nx">arguments</span><span class="p">,</span> <span class="mi">1</span> <span class="p">));</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="k">typeof</span> <span class="nx">method</span> <span class="o">===</span> <span class="s1">&#39;object&#39;</span> <span class="o">||</span> <span class="o">!</span> <span class="nx">method</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="k">return</span> <span class="nx">methods</span><span class="p">.</span><span class="nx">init</span><span class="p">.</span><span class="nx">apply</span><span class="p">(</span> <span class="k">this</span><span class="p">,</span> <span class="nx">arguments</span> <span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="nx">$</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span> <span class="s1">&#39;Method &#39;</span> <span class="o">+</span>  <span class="nx">method</span> <span class="o">+</span> <span class="s1">&#39; does not exist on jQuery.tooltip&#39;</span> <span class="p">);</span>
+    <span class="p">}</span>    
+  
+  <span class="p">};</span>
+
+<span class="p">})(</span> <span class="nx">jQuery</span> <span class="p">);</span>
+</code></pre></div><h3 id="prototype">Prototype</h3>
+<p>I don&#8217;t know why but when people describe the prototype object they always make it complicated. Granted, it is there to add some layer of object orientation to Javascript, but it is not like Java&#8217;s classes. It is simpiler.</p>
+<div class="highlight"><pre><code class="javascript">	<span class="kd">function</span> <span class="nx">Cart</span><span class="p">(</span><span class="nx">options</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">// add any data to the cart here</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">name</span> <span class="o">=</span> <span class="nx">options</span><span class="p">.</span><span class="nx">name</span><span class="p">;</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">products</span> <span class="o">=</span> <span class="p">[];</span>
+	<span class="p">}</span>
+
+	<span class="nx">Cart</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">addToCart</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">product</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">this</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nx">push</span><span class="p">(</span><span class="nx">product</span><span class="p">);</span>
+	<span class="p">};</span>
+	<span class="nx">Cart</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">getTotal</span> <span class="o">=</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+		<span class="kd">var</span> <span class="nx">i</span><span class="p">,</span><span class="nx">t</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">products</span><span class="p">.</span><span class="nx">length</span><span class="p">,</span> <span class="nx">products</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">products</span><span class="p">,</span> <span class="nx">total</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+		<span class="k">for</span><span class="p">(</span><span class="nx">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">&gt;</span><span class="nx">t</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">total</span> <span class="o">=</span> <span class="nx">total</span> <span class="o">+</span> <span class="nx">products</span><span class="p">[</span><span class="nx">i</span><span class="p">].</span><span class="nx">price</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">return</span> <span class="nx">total</span><span class="p">;</span>
+	<span class="p">};</span>
+	<span class="nx">Cart</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">checkout</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">creditCard</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">creditCard</span><span class="p">.</span><span class="nx">charge</span><span class="p">(</span> <span class="k">this</span><span class="p">.</span><span class="nx">getTotal</span><span class="p">()</span> <span class="p">);</span>
+	<span class="p">};</span>
+
+	<span class="kd">var</span> <span class="nx">shoppingCart</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Cart</span><span class="p">({</span> <span class="nx">name</span><span class="o">:</span> <span class="s1">&#39;shopping cart&#39;</span> <span class="p">});</span>
+
+	<span class="nx">shoppingCart</span><span class="p">.</span><span class="nx">addToCart</span><span class="p">(</span><span class="k">new</span> <span class="nx">Product</span><span class="p">({</span> <span class="nx">title</span><span class="o">:</span> <span class="s2">&quot;King Wizard&quot;</span><span class="p">,</span> <span class="nx">artist</span><span class="o">:</span> <span class="s2">&quot;Kid Cudi&quot;</span><span class="p">,</span> <span class="nx">price</span> <span class="o">:</span> <span class="mi">15</span> <span class="p">}));</span>
+</code></pre></div><p>As you can see, we are simply adding onto the prototype object attached to the function Cart. Those additions are passed onto any new Cart as methods. That&#8217;s it.</p>
+<p>Conceptually, its almost the same as your C++ or Python classes. There is a little magic that is needed to get inheritance working the way a server side developer would expect, but it is there.</p>
+<h4>this</h4>
+<p>The keyword &#8216;this&#8217; in javascript is a little confusing, mostly because of how javascript allows you to write in different styles. Think of it in this context though:</p>
+<p>- methods have the scope of the object they are attached too<br />
+- functions have their own scope, and are not attached to anything else</p>
+<p>You will not always hear about functions attached to a object as methods, because there is no reason to. They act the same, except for this one instance. Let me give an example. Feel free to copy this into your favorite js console.</p>
+<div class="highlight"><pre><code class="javascript">
+</code></pre></div><h3 id="when">When to use Prototype</h3>
+<p>Honestly, if you are not writing a web application with a lot of moving parts, you should avoid using the prototype object. If you are only creating one instance of the cart, in the example above, and one or two products, you will not see the performance increase. In fact, I have seen some libraries that a little like prototypes, there is a function and an object of functions attached to it, but they just don&#8217;t use the &#8216;new&#8217; keyword.</p>
+<p>Further Reading:<br />
+<a href="http://www.amazon.com/gp/product/0596806752/ref=as_li_ss_tl?ie=UTF8&amp;tag=bradav-20&amp;linkCode=as2&amp;camp=1789&amp;creative=390957&amp;creativeASIN=0596806752">Javascript Patterns</a> is where I based these examples and is a good read.</p>
